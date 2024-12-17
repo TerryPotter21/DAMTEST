@@ -16,14 +16,29 @@ code_input = st.text_input("Enter your access code:", type="password")
 # Check if the entered code is valid
 if code_input:  # Only check if the user has entered something
     if code_input in AUTHORIZED_CODES:
-        st.success("Access granted!")
-        
+        st.success("You're in.")
+
         # Show a loading spinner and progress bar
         with st.spinner("Loading your DAM tickers..."):
             progress_bar = st.progress(0)  # Initialize progress bar
-            for i in range(100):  # Simulate loading in increments
-                time.sleep(0.02)  # Small delay to mimic loading
-                progress_bar.progress(i + 1)  # Increment progress
+            total_tickers = len(tickers)
+            
+            # Download data for each ticker and update progress
+            for i, ticker in enumerate(tickers):
+                # Download data for each ticker
+                try:
+                    data = yf.download(ticker, start=start_date, end=end_date, interval="1mo")
+                    st.write(f"Data for {ticker}:")
+                    st.dataframe(data)
+                except Exception as e:
+                    st.error(f"Error downloading {ticker}: {e}")
+                
+                # Update progress bar
+                progress = (i + 1) / total_tickers  # Calculate progress percentage
+                progress_bar.progress(int(progress * 100))  # Update progress bar
+                
+                time.sleep(0.5)  # Small delay to simulate downloading time (can be adjusted)
+            
             progress_bar.empty()  # Clear the progress bar when done
         
         st.success("Data loaded successfully!")
@@ -33,7 +48,6 @@ if code_input:  # Only check if the user has entered something
         st.stop()  # Stops the app if the code is not correct
 else:
     st.info("Please enter your access code.")  # Friendly message when no code has been entered
-
 
 # Define tickers and time period
 tickers = [
