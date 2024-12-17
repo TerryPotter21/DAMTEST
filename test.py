@@ -56,6 +56,8 @@ if code_input:  # Only check if the user has entered something
     if code_input in AUTHORIZED_CODES:
         st.success("You're in.")
 
+        all_data = pd.DataFrame()
+
         # Show a loading spinner and progress bar
         with st.spinner("Loading your DAM tickers..."):
             progress_bar = st.progress(0)  # Initialize progress bar
@@ -86,8 +88,6 @@ if code_input:  # Only check if the user has entered something
         st.stop()  # Stops the app if the code is not correct
 else:
     st.info("Please enter your access code.")  # Friendly message when no code has been entered
-
-all_data = pd.DataFrame()
 
 # Define end date as today
 end_date = datetime.now().strftime('%Y-%m-%d')
