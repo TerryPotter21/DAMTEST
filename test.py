@@ -14,27 +14,26 @@ st.title("DYNAMIC ALPHA MODEL")
 code_input = st.text_input("Enter your access code:", type="password")
 
 # Check if the entered code is valid
-if code_input in AUTHORIZED_CODES:
-    st.success("Access granted! Loading the top tickers...")
-    
-    # Show a loading spinner and progress bar
-    with st.spinner("Fetching data, please wait..."):
-        progress_bar = st.progress(0)  # Initialize progress bar
-        for i in range(100):  # Simulate loading in increments
-            time.sleep(0.02)  # Small delay to mimic loading
-            progress_bar.progress(i + 1)  # Increment progress
-        progress_bar.empty()  # Clear the progress bar when done
-    
-    st.success("Data loaded successfully!")
-    
-    # Example app logic after loading
-    st.write("Top ticker information:")
-    data = yf.download("AAPL", start="2024-01-01", end="2024-07-01")  # Example ticker data
-    st.dataframe(data)
-
+if code_input:  # Only check if the user has entered something
+    if code_input in AUTHORIZED_CODES:
+        st.success("Access granted!")
+        
+        # Show a loading spinner and progress bar
+        with st.spinner("Loading your DAM tickers..."):
+            progress_bar = st.progress(0)  # Initialize progress bar
+            for i in range(100):  # Simulate loading in increments
+                time.sleep(0.02)  # Small delay to mimic loading
+                progress_bar.progress(i + 1)  # Increment progress
+            progress_bar.empty()  # Clear the progress bar when done
+        
+        st.success("Data loaded successfully!")
+        
+    else:
+        st.error("Invalid access code. Please try again.")
+        st.stop()  # Stops the app if the code is not correct
 else:
-    st.error("Invalid access code. Please try again.")
-    st.stop()  # Stops the app if the code is not correct
+    st.info("Please enter your access code.")  # Friendly message when no code has been entered
+
 
 # Define tickers and time period
 tickers = [
