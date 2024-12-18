@@ -1,4 +1,9 @@
 import streamlit as st
+import pandas as pd
+import yfinance as yf
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+from yahooquery import Ticker
 
 # Define a list of allowed access codes
 AUTHORIZED_CODES = ["freelunch"]
@@ -8,18 +13,15 @@ st.title("Dynamic Alpha Model (Beta)")
 code_input = st.text_input("Enter your DAM access code:", type="password")
 
 # Check if the entered code is valid
-if code_input:  # Only proceed if something is entered
+if code_input:  # Ensure user has entered something
     if code_input in AUTHORIZED_CODES:
         st.success("You're in. Please allow a few minutes for your DAM tickers to load.")
+        # Your code for the authenticated app logic goes here.
     else:
         st.error("Please enter a valid code.")
-        st.stop()  # Stops the app if the code is not correct
-
-import pandas as pd
-import yfinance as yf
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-from yahooquery import Ticker
+        st.stop()
+else:
+    st.info("Please enter your access code.")  # Show an info message for better UX
 
 # Define tickers and time period
 tickers = [
