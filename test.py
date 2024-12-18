@@ -17,46 +17,10 @@ if code_input in AUTHORIZED_CODES:
     st.success("You're in. Please allow a few minutes for your DAM tickers to load.")
 else:
     st.error("Please enter a valid code.")
-    st.stop()
+    st.stop()  # Stops the app if the code is not correct
 
 # Define tickers and time period
-tickers = [
-    'SPY', 'A', 'AAPL', 'ABBV', 'ABC', 'ABMD', 'ABT', 'ACGL', 'ACN', 'ADBE', 'ADI', 'ADM', 'ADP', 'ADSK',
-    'AEE', 'AEP', 'AES', 'AFL', 'AIG', 'AIZ', 'AJG', 'AKAM', 'ALB', 'ALGN', 'ALK', 'ALL', 'ALLE', 'AMAT',
-    'AMCR', 'AMD', 'AME', 'AMGN', 'AMP', 'AMT', 'AMZN', 'ANET', 'ANSS', 'AON', 'AOS', 'APA', 'APD', 'APH',
-    'APTV', 'ARE', 'ATO', 'ATVI', 'AVB', 'AVGO', 'AVY', 'AWK', 'AXP', 'AZO', 'BA', 'BAC', 'BAX', 'BBWI',
-    'BBY', 'BDX', 'BEN', 'BF.B', 'BIIB', 'BK', 'BKNG', 'BKR', 'BLK', 'BLL', 'BMY', 'BR', 'BRK.B', 'BRO',
-    'BSX', 'BWA', 'BXP', 'C', 'CAG', 'CAH', 'CARR', 'CAT', 'CB', 'CBOE', 'CBRE', 'CCI', 'CCL', 'CDNS',
-    'CDW', 'CE', 'CEG', 'CF', 'CFG', 'CHD', 'CHRW', 'CHTR', 'CI', 'CINF', 'CL', 'CLX', 'CMCSA', 'CME',
-    'CMG', 'CMS', 'CNC', 'CNP', 'COF', 'COO', 'COP', 'COST', 'CPB', 'CPRT', 'CPT', 'CRL', 'CRM', 'CRWD', 'CSCO',
-    'CSGP', 'CSX', 'CTAS', 'CTLT', 'CTRA', 'CTSH', 'CTVA', 'CVS', 'CVX', 'D', 'DAL', 'DD', 'DE', 'DELL', 'DECK',
-    'DFS', 'DG', 'DGX', 'DHI', 'DHR', 'DIS', 'DISCA', 'DISCK', 'DISH', 'DLR', 'DLTR', 'DOCU', 'DOV', 'DOW',
-    'DPZ', 'DRE', 'DRI', 'DTE', 'DUK', 'DVA', 'DVN', 'DXCM', 'EA', 'EBAY', 'ECL', 'ED', 'EFX', 'EIX', 'EL',
-    'EMN', 'EMR', 'ENPH', 'EOG', 'EPAM', 'EQIX', 'EQR', 'ES', 'ESS', 'ETN', 'ETR', 'ERIE', 'EVRG', 'EW', 'EXC',
-    'EXPD', 'EXPE', 'EXR', 'F', 'FANG', 'FAST', 'FBHS', 'FCX', 'FDS', 'FDX', 'FE', 'FFIV', 'FIS', 'FISV',
-    'FITB', 'FLT', 'FMC', 'FOX', 'FOXA', 'FRT', 'FTNT', 'FTV', 'GD', 'GDDY', 'GE', 'GEV', 'GEHC', 'GILD', 'GIS', 'GL',
-    'GLW', 'GM', 'GNRC', 'GOOG', 'GOOGL', 'GPC', 'GPN', 'GRMN', 'GS', 'GWW', 'HAL', 'HAS', 'HBAN', 'HCA',
-    'HD', 'HES', 'HIG', 'HII', 'HLT', 'HOLX', 'HON', 'HPE', 'HPQ', 'HRL', 'HSIC', 'HST', 'HSY', 'HUM',
-    'HWM', 'IBM', 'ICE', 'IDXX', 'IEX', 'IFF', 'INCY', 'INTC', 'INTU', 'INVH', 'IP', 'IPG', 'IR', 'IRM',
-    'ISRG', 'IT', 'ITW', 'IVZ', 'J', 'JBHT', 'JCI', 'JKHY', 'JNJ', 'JPM', 'K', 'KEY', 'KEYS', 'KHC', 'KIM',
-    'KKR', 'KLAC', 'KMB', 'KMI', 'KO', 'KR', 'L', 'LDOS', 'LEN', 'LH', 'LHX', 'LIN', 'LMT', 'LNC', 'LNT',
-    'LOW', 'LRCX', 'LUMN', 'LUV', 'LYB', 'MA', 'MAA', 'MAR', 'MAS', 'MCD', 'MCHP', 'MCK', 'MCO', 'MDLZ',
-    'MDT', 'MET', 'META', 'MGM', 'MHK', 'MKC', 'MKTX', 'MLM', 'MMC', 'MMM', 'MNST', 'MO', 'MOS', 'MPWR',
-    'MRK', 'MRO', 'MS', 'MSCI', 'MSFT', 'MSI', 'MTB', 'MTD', 'MU', 'NCLH', 'NDAQ', 'NEE', 'NEM', 'NFLX',
-    'NI', 'NKE', 'NOC', 'NOV', 'NRG', 'NSC', 'NTAP', 'NTRS', 'NUE', 'NVDA', 'NVR', 'NWL', 'NWS', 'NWSA',
-    'O', 'ODFL', 'OGN', 'OKE', 'OMC', 'ON', 'ORCL', 'ORLY', 'OTIS', 'OXY', 'PARA', 'PAYC', 'PAYX', 'PCAR',
-    'PCG', 'PEAK', 'PEG', 'PENN', 'PEP', 'PFE', 'PFG', 'PG', 'PGR', 'PH', 'PHM', 'PKG', 'PKI', 'PLD',
-    'PLTR', 'PM', 'PNC', 'PNR', 'PNW', 'POOL', 'PPG', 'PPL', 'PRU', 'PSA', 'PSX', 'PTC', 'PVH', 'PWR',
-    'PYPL', 'QCOM', 'QRVO', 'RCL', 'RE', 'REG', 'REGN', 'RF', 'RJF', 'RL', 'RMD', 'ROK', 'ROL', 'ROP',
-    'ROST', 'RSG', 'RTX', 'SBAC', 'SBUX', 'SCHW', 'SEDG', 'SEE', 'SHW', 'SIRI', 'SJM', 'SLB', 'SLG',
-    'SNA', 'SNPS', 'SMCI', 'SO', 'SOLV', 'SPG', 'SPGI', 'SRE', 'STE', 'STT', 'STX', 'STZ', 'SWK', 'SWKS', 'SYF', 'SYK',
-    'SYY', 'T', 'TAP', 'TDG', 'TDY', 'TECH', 'TEL', 'TER', 'TFC', 'TFX', 'TGT', 'TJX', 'TMO', 'TMUS',
-    'TPR', 'TRMB', 'TROW', 'TRV', 'TSCO', 'TSLA', 'TSN', 'TT', 'TTWO', 'TXN', 'TXT', 'TYL', 'UAL', 'UDR',
-    'UHS', 'ULTA', 'UNH', 'UNP', 'UPS', 'URI', 'USB', 'V', 'VICI', 'VLO', 'VMC', 'VNO', 'VRSK', 'VRSN',
-    'VRTX', 'VTR', 'VTRS', 'VZ', 'VST', 'WAB', 'WAT', 'WBA', 'WBD', 'WDC', 'WEC', 'WELL', 'WFC', 'WM',
-    'WMB', 'WMT', 'WRB', 'WRK', 'WST', 'WTW', 'WY', 'WYNN', 'XEL', 'XOM', 'XYL', 'YUM', 'ZBH', 'ZBRA', 'ZTS'
-]
-
+tickers = ['SPY', 'AAPL', 'MSFT', 'GOOG', 'AMZN', 'JNJ', 'PFE']  # Reduced list for clarity
 all_data = pd.DataFrame()
 
 # Define end date as today
@@ -75,10 +39,9 @@ for ticker in tickers:
     data['Sector'] = sector
     all_data = pd.concat([all_data, data[['Ticker', 'Sector', 'Adj Close']]])
 
-# Reset index to format DataFrame
 all_data.reset_index(inplace=True)
 
-# Calculate Excess Return (Column E)
+# Calculate Excess Return
 all_data['Excess Return'] = (
     all_data.groupby('Ticker')['Adj Close']
     .pct_change()
@@ -90,15 +53,13 @@ all_data['Excess Return'] = (
 spy_data = yf.download('SPY', start=start_date, end=end_date, interval="1mo")
 spy_data['SPY Excess Return'] = spy_data['Adj Close'].pct_change().sub(0.024 / 12).fillna(0)
 spy_data.reset_index(inplace=True)
-
-# Map SPY Excess Return to all_data
 spy_return_map = dict(zip(spy_data['Date'], spy_data['SPY Excess Return']))
 all_data['SPY Excess Return'] = all_data['Date'].map(spy_return_map)
 
-# Calculate 3 Month Return (Column G)
+# Calculate 3 Month Return
 all_data['3 Month Return'] = all_data.groupby('Ticker')['Adj Close'].pct_change(periods=3)
 
-# Calculate 3 Month Market Weighted Return (Column H)
+# Calculate 3 Month Market Weighted Return
 def calculate_market_weighted_return(df):
     weighted_returns = []
     for i in range(len(df)):
@@ -117,7 +78,7 @@ all_data['3 Month Market Weighted Return'] = (
     all_data.groupby('Ticker', group_keys=False).apply(calculate_market_weighted_return)
 )
 
-# Calculate 12 Month Beta (Column I)
+# Calculate 12 Month Beta
 def calculate_beta(df):
     beta = []
     for i in range(len(df)):
@@ -140,27 +101,26 @@ def calculate_dam(row):
 # Apply DAM calculation
 all_data['DAM'] = all_data.apply(calculate_dam, axis=1)
 
-# Group by Sector and apply the 20% max constraint
-def apply_sector_constraint(group, max_allocation=0.20):
-    group = group.sort_values('DAM', ascending=False)
-    allocation = []
-    remaining = 1.0  # Total available allocation per sector
+# Apply 20% constraint
+def apply_max_allocation_constraint(df, max_allocation=0.20):
+    df = df.sort_values(by='DAM', ascending=False)
+    total_weight = 0
+    allocations = []
+    
+    for _, row in df.iterrows():
+        remaining_allocation = max_allocation - total_weight
+        allocation = min(row['DAM'], remaining_allocation)
+        total_weight += allocation
+        allocations.append(allocation)
+    
+    df['Adjusted Weight'] = allocations
+    return df
 
-    for _, row in group.iterrows():
-        if remaining <= 0:
-            allocation.append(0.0)
-        elif row['DAM'] <= max_allocation:
-            allocation.append(row['DAM'])
-            remaining -= row['DAM']
-        else:
-            allocation.append(min(row['DAM'], max_allocation))
-            remaining -= max_allocation
+# Group by sector and apply the constraint
+sector_best_tickers = all_data.groupby('Sector').apply(lambda x: apply_max_allocation_constraint(x))
 
-    group['Allocation'] = allocation
-    return group
-
-sector_best_tickers = all_data.groupby('Sector').apply(lambda x: apply_sector_constraint(x))
-
-# Print results
-st.write("Sector-wise Allocations with Constraints:")
-st.dataframe(sector_best_tickers[['Sector', 'Ticker', 'DAM', 'Allocation']])
+# Print Results
+st.write(f"{'Sector':<20} | {'Ticker':<6} | {'DAM':<8} | {'Adjusted Weight':>15}")
+st.write("-" * 58)
+for sector, row in sector_best_tickers.iterrows():
+    st.write(f"{row['Sector']:<20} | {row['Ticker']:<6} | {row['DAM']:<8.2f} | {row['Adjusted Weight']:>15.2%}")
