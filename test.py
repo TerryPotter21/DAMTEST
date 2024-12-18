@@ -1,4 +1,9 @@
 import streamlit as st
+import pandas as pd
+import yfinance as yf
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+from yahooquery import Ticker
 
 # Define a list of allowed access codes
 AUTHORIZED_CODES = ["freelunch"]
@@ -13,12 +18,6 @@ if code_input in AUTHORIZED_CODES:
 else:
     st.error("Please enter a valid code.")
     st.stop()  # Stops the app if the code is not correct
-
-import pandas as pd
-import yfinance as yf
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-from yahooquery import Ticker
 
 # Define tickers and time period
 tickers = [
@@ -107,48 +106,26 @@ all_data['SPY Excess Return'] = all_data['Date'].map(spy_return_map)
 # Calculate 3 Month Return (Column G)
 all_data['3 Month Return'] = all_data.groupby('Ticker')['Adj Close'].pct_change(periods=3)
 
-# Calculate 3 Month Market Weighted Return (Column H)
-def calculate_market_weighted_return(df):
-    weighted_returns = []
-    for i in range(len(df)):
-        if i < 3:  # Require at least 3 months of data
-            weighted_returns.append(None)
-        else:
-            weighted_return = (
-                df['SPY Excess Return'].iloc[i-3] * 0.04 +  # 3 periods ago
-                df['SPY Excess Return'].iloc[i-2] * 0.16 +  # 2 periods ago
-                df['SPY Excess Return'].iloc[i-1] * 0.36    # 1 period ago (most recent)
-            )
-            weighted_returns.append(weighted_return)
-    return pd.Series(weighted_returns, index=df.index)
+# Now, let's calculate sector weights and top 2 tickers for each sector
+sector_returns = all_data.groupby(['Sector', 'Ticker'])['3 Month Return'].last().reset_index()
 
-all_data['3 Month Market Weighted Return'] = (
-    all_data.groupby('Ticker', group_keys=False).apply(calculate_market_weighted_return)
-)
+# Sort by sector and 3 Month Return in descending order
+sector_returns_sorted = sector_returns.sort_values(['Sector', '3 Month Return'], ascending=[True, False])
 
-# Calculate 12 Month Beta (Column I)
-def calculate_beta(df):
-    beta = []
-    for i in range(len(df)):
-        if i < 11:  # Require at least 12 months of data
-            beta.append(None)
-        else:
-            y = df['Excess Return'].iloc[i-11:i+1]
-            x = df['SPY Excess Return'].iloc[i-11:i+1]
-            beta.append(pd.Series(y).cov(x) / pd.Series(x).var())
-    return pd.Series(beta, index=df.index)
+# Create a dictionary to store top 2 tickers for each sector
+top_tickers = {}
 
-all_data['12 Month Beta'] = (
-    all_data.groupby('Ticker', group_keys=False).apply(calculate_beta)
-)
+for sector, group in sector_returns_sorted.groupby('Sector'):
+    top_tickers[sector] = group.head(2)  # Get top 2 tickers for each sector
 
-# Define DAM calculation function
-def calculate_dam(row):
-    # Example formula combining 3-month return, market weighted return, and beta.
-    return (row['3 Month Return'] or 0) + (row['3 Month Market Weighted Return'] or 0) + (row['12 Month Beta'] or 0)
+# Calculate sector weight (Example: Market Cap or any other metric)
+# You can use a more complex calculation here, like market cap.
+sector_weights = all_data.groupby('Sector').size() / len(all_data)
 
-# Apply DAM calculation to each row
-all_data['DAM'] = all_data.apply(calculate_dam, axis=1)
-
-# Display the data
-st.write(all_data)
+# Now, print the top 2 tickers for each sector where the weight exceeds 20%
+for sector, tickers_df in top_tickers.items():
+    weight = sector_weights.get(sector, 0)
+    if weight > 0.20:
+        print(f"Sector: {sector}, Weight: {weight:.2f}")
+        for _, row in tickers_df.iterrows():
+            print(f"  Ticker: {row['Ticker']}, 3-Month Return: {row['3 Month Return']:.2%}")
