@@ -1,9 +1,4 @@
 import streamlit as st
-import pandas as pd
-import yfinance as yf
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-from yahooquery import Ticker
 
 # Define a list of allowed access codes
 AUTHORIZED_CODES = ["freelunch"]
@@ -19,6 +14,12 @@ if code_input:  # Only proceed if something is entered
     else:
         st.error("Please enter a valid code.")
         st.stop()  # Stops the app if the code is not correct
+
+import pandas as pd
+import yfinance as yf
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+from yahooquery import Ticker
 
 # Define tickers and time period
 tickers = [
