@@ -1,9 +1,4 @@
 import streamlit as st
-import pandas as pd
-import yfinance as yf
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-from yahooquery import Ticker
 
 # Define a list of allowed access codes
 AUTHORIZED_CODES = ["freelunch"]
@@ -17,7 +12,13 @@ if code_input in AUTHORIZED_CODES:
     st.success("You're in. Please allow a few minutes for your DAM tickers to load.")
 else:
     st.error("Please enter a valid code.")
-    st.stop()
+    st.stop()  # Stops the app if the code is not correct
+
+import pandas as pd
+import yfinance as yf
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+from yahooquery import Ticker
 
 # Define tickers and time period
 tickers = [
@@ -68,11 +69,19 @@ start_date = (datetime.now() - relativedelta(months=13)).replace(day=1).strftime
 # Download data for all tickers
 for ticker in tickers:
     print(f"Downloading monthly data for {ticker}...")
+    
+    # Download monthly historical data for each ticker
     data = yf.download(ticker, start=start_date, end=end_date, interval="1mo")
+    
+    # Get stock info, including sector
     stock_info = yf.Ticker(ticker).info
     sector = stock_info.get('sector', 'N/A')  # Get sector, if not available, return 'N/A'
+    
+    # Add Ticker, Sector, and Adjusted Close columns
     data['Ticker'] = ticker
     data['Sector'] = sector
+    
+    # Keep only the required columns
     all_data = pd.concat([all_data, data[['Ticker', 'Sector', 'Adj Close']]])
 
 # Reset index to format DataFrame
@@ -102,13 +111,13 @@ all_data['3 Month Return'] = all_data.groupby('Ticker')['Adj Close'].pct_change(
 def calculate_market_weighted_return(df):
     weighted_returns = []
     for i in range(len(df)):
-        if i < 3:
+        if i < 3:  # Require at least 3 months of data
             weighted_returns.append(None)
         else:
             weighted_return = (
-                df['SPY Excess Return'].iloc[i-3] * 0.04 +
-                df['SPY Excess Return'].iloc[i-2] * 0.16 +
-                df['SPY Excess Return'].iloc[i-1] * 0.36
+                df['SPY Excess Return'].iloc[i-3] * 0.04 +  # 3 periods ago
+                df['SPY Excess Return'].iloc[i-2] * 0.16 +  # 2 periods ago
+                df['SPY Excess Return'].iloc[i-1] * 0.36    # 1 period ago (most recent)
             )
             weighted_returns.append(weighted_return)
     return pd.Series(weighted_returns, index=df.index)
@@ -121,7 +130,7 @@ all_data['3 Month Market Weighted Return'] = (
 def calculate_beta(df):
     beta = []
     for i in range(len(df)):
-        if i < 11:
+        if i < 11:  # Require at least 12 months of data
             beta.append(None)
         else:
             y = df['Excess Return'].iloc[i-11:i+1]
@@ -133,34 +142,24 @@ all_data['12 Month Beta'] = (
     all_data.groupby('Ticker', group_keys=False).apply(calculate_beta)
 )
 
-# Define DAM calculation function
+# Define DAM calculation function with 20% constraint
 def calculate_dam(row):
-    return (row['3 Month Return'] or 0) + (row['3 Month Market Weighted Return'] or 0) + (row['12 Month Beta'] or 0)
+    # Example formula combining 3-month return, market weighted return, and beta.
+    dam_value = (row['3 Month Return'] or 0) + (row['3 Month Market Weighted Return'] or 0) - (row['12 Month Beta'] or 0)
+    
+    # Apply 20% constraint
+    if dam_value > 0.2:
+        return 0.2
+    elif dam_value < -0.2:
+        return -0.2
+    else:
+        return dam_value
 
-# Apply DAM calculation
+# Calculate DAM for each row
 all_data['DAM'] = all_data.apply(calculate_dam, axis=1)
 
-# Group by Sector and apply the 20% max constraint
-def apply_sector_constraint(group, max_allocation=0.20):
-    group = group.sort_values('DAM', ascending=False)
-    allocation = []
-    remaining = 1.0  # Total available allocation per sector
+# Filter data where DAM exceeds the 20% constraint (optional, if you want to limit the results)
+filtered_data = all_data[all_data['DAM'] > 0.2]
 
-    for _, row in group.iterrows():
-        if remaining <= 0:
-            allocation.append(0.0)
-        elif row['DAM'] <= max_allocation:
-            allocation.append(row['DAM'])
-            remaining -= row['DAM']
-        else:
-            allocation.append(min(row['DAM'], max_allocation))
-            remaining -= max_allocation
-
-    group['Allocation'] = allocation
-    return group
-
-sector_best_tickers = all_data.groupby('Sector').apply(lambda x: apply_sector_constraint(x))
-
-# Print results
-st.write("Sector-wise Allocations with Constraints:")
-st.dataframe(sector_best_tickers[['Sector', 'Ticker', 'DAM', 'Allocation']])
+# Display the filtered results
+st.write(filtered_data)
