@@ -6,7 +6,10 @@ st.markdown("""
             background-color: #393535;  /* Updated background color */
             color: #E9EAEF;  /* Updated font color */
         }
-        .css-1d391kg {  /* Title background */
+        h1, h2, h3, h4, h5, h6 {
+            color: #E9EAEF;  /* Updated text color for headers */
+        }
+        .css-1aumxhk, .css-1v0mbdj, .css-1d391kg {
             background-color: #515256;  /* Updated secondary background color */
         }
     </style>
