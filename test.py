@@ -1,14 +1,13 @@
 import streamlit as st
 
-# Apply custom CSS for background and font colors
 st.markdown("""
     <style>
         body {
-            background-color: #f0f2f6;  /* Default background color */
-            color: #333333;  /* Font color */
+            background-color: #393535;  /* Updated background color */
+            color: #E9EAEF;  /* Updated font color */
         }
         .css-1d391kg {  /* Title background */
-            background-color: #1e3d58;  /* Secondary background color */
+            background-color: #515256;  /* Updated secondary background color */
         }
     </style>
 """, unsafe_allow_html=True)
