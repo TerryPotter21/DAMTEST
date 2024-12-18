@@ -4,7 +4,21 @@ import yfinance as yf
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from yahooquery import Ticker
-import time
+
+# Define a list of allowed access codes
+AUTHORIZED_CODES = ["freelunch"]
+
+# Login page
+st.title("Dynamic Alpha Model (Beta)")
+code_input = st.text_input("Enter your DAM access code:", type="password")
+
+# Check if the entered code is valid
+if code_input:  # Only proceed if something is entered
+    if code_input in AUTHORIZED_CODES:
+        st.success("You're in. Please allow a few minutes for your DAM tickers to load.")
+    else:
+        st.error("Please enter a valid code.")
+        st.stop()  # Stops the app if the code is not correct
 
 # Define tickers and time period
 tickers = [
@@ -44,50 +58,7 @@ tickers = [
     'WMB', 'WMT', 'WRB', 'WRK', 'WST', 'WTW', 'WY', 'WYNN', 'XEL', 'XOM', 'XYL', 'YUM', 'ZBH', 'ZBRA', 'ZTS'
 ]
 
-# Define a list of allowed access codes
-AUTHORIZED_CODES = ["freelunch"]
-
-# Login page
-st.title("DYNAMIC ALPHA MODEL")
-code_input = st.text_input("Enter your access code:", type="password")
-
-# Check if the entered code is valid
-if code_input:  # Only check if the user has entered something
-    if code_input in AUTHORIZED_CODES:
-        st.success("You're in.")
-
-        all_data = pd.DataFrame()
-
-        # Show a loading spinner and progress bar
-        with st.spinner("Loading your DAM tickers..."):
-            progress_bar = st.progress(0)  # Initialize progress bar
-            total_tickers = len(tickers)
-            
-            # Download data for each ticker and update progress
-            for i, ticker in enumerate(tickers):
-                # Download data for each ticker
-                try:
-                    data = yf.download(ticker, start=start_date, end=end_date, interval="1mo")
-                    st.write(f"Data for {ticker}:")
-                    st.dataframe(data)
-                except Exception as e:
-                    st.error(f"Error downloading {ticker}: {e}")
-                
-                # Update progress bar
-                progress = (i + 1) / total_tickers  # Calculate progress percentage
-                progress_bar.progress(int(progress * 100))  # Update progress bar
-                
-                time.sleep(0.5)  # Small delay to simulate downloading time (can be adjusted)
-            
-            progress_bar.empty()  # Clear the progress bar when done
-        
-        st.success("Data loaded successfully!")
-        
-    else:
-        st.error("Invalid access code. Please try again.")
-        st.stop()  # Stops the app if the code is not correct
-else:
-    st.info("Please enter your access code.")  # Friendly message when no code has been entered
+all_data = pd.DataFrame()
 
 # Define end date as today
 end_date = datetime.now().strftime('%Y-%m-%d')
