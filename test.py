@@ -1,4 +1,9 @@
 import streamlit as st
+import pandas as pd
+import yfinance as yf
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+from yahooquery import Ticker
 
 # Define a list of allowed access codes
 AUTHORIZED_CODES = ["freelunch"]
@@ -13,12 +18,6 @@ if code_input in AUTHORIZED_CODES:
 else:
     st.error("Please enter a valid code.")
     st.stop()  # Stops the app if the code is not correct
-
-import pandas as pd
-import yfinance as yf
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-from yahooquery import Ticker
 
 # Define tickers and time period
 tickers = [
@@ -142,24 +141,34 @@ all_data['12 Month Beta'] = (
     all_data.groupby('Ticker', group_keys=False).apply(calculate_beta)
 )
 
-# Define DAM calculation function with 20% constraint
-def calculate_dam(row):
-    # Example formula combining 3-month return, market weighted return, and beta.
-    dam_value = (row['3 Month Return'] or 0) + (row['3 Month Market Weighted Return'] or 0) - (row['12 Month Beta'] or 0)
+# Group by sector and select top 3 tickers based on a ranking criterion (e.g., 3 Month Return)
+def get_top_tickers_by_sector(all_data):
+    top_tickers = []
+
+    # Group by sector
+    sectors = all_data['Sector'].unique()
+
+    for sector in sectors:
+        # Filter data for each sector
+        sector_data = all_data[all_data['Sector'] == sector]
+        
+        # Calculate average 3-month return for each ticker in the sector
+        sector_avg_return = sector_data.groupby('Ticker')['3 Month Return'].mean()
+
+        # Rank tickers by 3-month return (descending order)
+        top_sector_tickers = sector_avg_return.nlargest(3).index.tolist()
+        
+        # Add top tickers to the list
+        top_tickers.extend(top_sector_tickers)
     
-    # Apply 20% constraint
-    if dam_value > 0.2:
-        return 0.2
-    elif dam_value < -0.2:
-        return -0.2
-    else:
-        return dam_value
+    return top_tickers
 
-# Calculate DAM for each row
-all_data['DAM'] = all_data.apply(calculate_dam, axis=1)
+# Get the top 3 tickers for each sector
+top_tickers = get_top_tickers_by_sector(all_data)
 
-# Filter data where DAM exceeds the 20% constraint (optional, if you want to limit the results)
-filtered_data = all_data[all_data['DAM'] > 0.2]
+# Filter all_data to only include the top 3 tickers for each sector
+all_data_top = all_data[all_data['Ticker'].isin(top_tickers)]
 
-# Display the filtered results
-st.write(filtered_data)
+# Display the results for the top tickers
+st.write("Top 3 tickers per sector:", top_tickers)
+st.write("Filtered data for top tickers:", all_data_top)
