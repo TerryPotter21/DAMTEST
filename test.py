@@ -1,19 +1,9 @@
 import streamlit as st
-
-st.markdown("""
-    <style>
-        body {
-            background-color: #393535;  /* Updated background color */
-            color: #E9EAEF;  /* Updated font color */
-        }
-        h1, h2, h3, h4, h5, h6 {
-            color: #E9EAEF;  /* Updated text color for headers */
-        }
-        .css-1aumxhk, .css-1v0mbdj, .css-1d391kg {
-            background-color: #515256;  /* Updated secondary background color */
-        }
-    </style>
-""", unsafe_allow_html=True)
+import pandas as pd
+import yfinance as yf
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+from yahooquery import Ticker
 
 # Define a list of allowed access codes
 AUTHORIZED_CODES = ["freelunch"]
@@ -28,12 +18,6 @@ if code_input in AUTHORIZED_CODES:
 else:
     st.error("Please enter a valid code.")
     st.stop()  # Stops the app if the code is not correct
-
-import pandas as pd
-import yfinance as yf
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-from yahooquery import Ticker
 
 # Define tickers and time period
 tickers = [
