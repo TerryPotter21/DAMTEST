@@ -174,6 +174,6 @@ sector_data['Sector Weight'] = (sector_data['Sector Weight'] * 100).round(2).ast
 # Reset index to remove the extra column
 sector_data_reset = sector_data[['Sector', 'Sector Weight']].reset_index(drop=True)
 
-# Display the sector weights without index
+# Display the sector weights without the index
 st.subheader("Sector Weights")
-st.dataframe(sector_data_reset, use_container_width=True)
+st.dataframe(sector_data_reset, use_container_width=True, index=False)
