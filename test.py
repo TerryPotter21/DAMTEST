@@ -14,7 +14,7 @@ code_input = st.text_input("Enter your DAM access code:", type="password")
 
 # Check if the entered code is valid
 if code_input in AUTHORIZED_CODES:
-    st.success("You're in. Please allow a few minutes for your DAM tickers to load.")
+    st.success("Access Granted! Please allow a few minutes for your DAM tickers to load.")
 else:
     st.error("Please enter a valid code.")
     st.stop()  # Stops the app if the code is not correct
@@ -153,7 +153,7 @@ all_data['DAM'] = all_data.apply(calculate_dam, axis=1)
 sector_best_tickers = all_data.groupby('Sector').apply(lambda x: x.loc[x['DAM'].idxmax()])
 
 # Display the tickers with the highest DAM for each sector
-st.subheader("DAM Ticker")
+st.subheader("DAM Tickers")
 st.dataframe(sector_best_tickers[['Ticker']])
 
 # --- Calculate market capitalization and weights by sector ---
