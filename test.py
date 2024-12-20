@@ -153,23 +153,29 @@ all_data['DAM'] = all_data.apply(calculate_dam, axis=1)
 sector_best_tickers = all_data.groupby('Sector').apply(lambda x: x.loc[x['DAM'].idxmax()])
 
 # Print the result: tickers with the highest DAM for each sector
+st.write("Tickers with the highest DAM for each sector:")
 st.write(sector_best_tickers[['Ticker']])
 
-# Fetch the sector weightings for SPY ETF
-etf = Ticker('SPY')
+# --- Fetch sector weightings for SPY ---
+# Define the ETF symbol for S&P 500 (SPDR S&P 500 ETF Trust - SPY)
+symbol = 'SPY'
+
+# Fetch the fund sector data
+etf = Ticker(symbol)
 sector_weightings = etf.fund_sector_weightings
 
-# Check and print sector weightings
-if isinstance(sector_weightings, dict) and 'SPY' in sector_weightings:
-    st.write(f"\nSector weightings for SPY ETF:")
-    for sector, weight in sector_weightings['SPY'].items():
-        st.write(f"{sector}: {weight:.2%}")
+# Check if sector weightings are available and format as a DataFrame
+if isinstance(sector_weightings, dict) and symbol in sector_weightings:
+    sector_data = sector_weightings[symbol]
+    sector_df = pd.DataFrame(sector_data.items(), columns=['Sector', 'Weight'])
+    sector_df['Weight'] = sector_df['Weight'].apply(lambda x: f"{x:.2%}")
+    st.write(f"\nSector weightings for {symbol}:")
+    st.write(sector_df.to_string(index=False))
 elif hasattr(sector_weightings, 'columns') and 'SPY' in sector_weightings.columns:
-    st.write(f"\nSector weightings for SPY ETF:")
-    for index, row in sector_weightings.iterrows():
-        sector = index.strip()
-        weight = row['SPY']
-        if sector:  # Skip any empty rows
-            st.write(f"{sector}: {weight:.2%}")
+    sector_df = sector_weightings[['SPY']].reset_index()
+    sector_df.columns = ['Sector', 'Weight']
+    sector_df['Weight'] = sector_df['Weight'].apply(lambda x: f"{x:.2%}")
+    st.write(f"\nSector weightings for {symbol}:")
+    st.write(sector_df.to_string(index=False))
 else:
-    st.write("Sector weightings for SPY ETF not found or no data available.")
+    st.write(f"\nSector weightings for {symbol} not found or no data available.")
