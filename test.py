@@ -14,7 +14,7 @@ code_input = st.text_input("Enter your DAM access code:", type="password")
 
 # Check if the entered code is valid
 if code_input in AUTHORIZED_CODES:
-    st.success("You're in. Please allow a few minutes for your DAM tickers to load.")
+    st.success("Access Granted! Please allow a few minutes for your DAM tickers to load.")
 else:
     st.error("Please enter a valid code.")
     st.stop()  # Stops the app if the code is not correct
@@ -85,6 +85,9 @@ for ticker in tickers:
 
 # Reset index to format DataFrame
 all_data.reset_index(inplace=True)
+
+# Exclude tickers with "N/A" sector
+all_data = all_data[all_data['Sector'] != 'N/A']
 
 # Calculate Excess Return (Column E)
 all_data['Excess Return'] = (
