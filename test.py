@@ -153,4 +153,28 @@ all_data['DAM'] = all_data.apply(calculate_dam, axis=1)
 sector_best_tickers = all_data.groupby('Sector').apply(lambda x: x.loc[x['DAM'].idxmax()])
 
 # Print the result: tickers with the highest DAM for each sector
-st.write(sector_best_tickers[['Ticker', 'DAM']])
+print(sector_best_tickers[['Ticker']])
+
+from yahooquery import Ticker
+
+# Define the ETF symbol for S&P 500 (SPDR S&P 500 ETF Trust - SPY)
+symbol = 'SPY'
+
+# Fetch the fund sector data
+etf = Ticker(symbol)
+sector_weightings = etf.fund_sector_weightings
+
+# Check and print sector weightings
+if isinstance(sector_weightings, dict) and symbol in sector_weightings:
+    print(f"Sector weightings for {symbol}:")
+    for sector, weight in sector_weightings[symbol].items():
+        print(f"{sector}: {weight:.2%}")
+elif hasattr(sector_weightings, 'columns') and 'SPY' in sector_weightings.columns:
+    print(f"Sector weightings for {symbol}:")
+    for index, row in sector_weightings.iterrows():
+        sector = index.strip()
+        weight = row['SPY']
+        if sector:  # Skip any empty rows
+            print(f"{sector}: {weight:.2%}")
+else:
+    print(f"Sector weightings for {symbol} not found or no data available.")
