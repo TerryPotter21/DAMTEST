@@ -171,9 +171,9 @@ sector_data['Sector Weight'] = sector_data['market_weighted_return'] / total_mar
 # Format sector weights as percentages
 sector_data['Sector Weight'] = (sector_data['Sector Weight'] * 100).round(2).astype(str) + '%'
 
-# Remove the index column by setting it to None
-sector_data_reset = sector_data[['Sector', 'Sector Weight']]
+# Reset index of the DataFrame to avoid displaying it
+sector_data_reset = sector_data[['Sector', 'Sector Weight']].reset_index(drop=True)
 
-# Display the sector weights without the index
+# Display the sector weights in a neat table
 st.subheader("Sector Weights")
-st.write(sector_data_reset.to_string(index=False), use_container_width=True)
+st.dataframe(sector_data_reset, use_container_width=True)
