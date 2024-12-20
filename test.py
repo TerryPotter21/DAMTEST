@@ -156,26 +156,25 @@ sector_best_tickers = all_data.groupby('Sector').apply(lambda x: x.loc[x['DAM'].
 st.write("Tickers with the highest DAM for each sector:")
 st.write(sector_best_tickers[['Ticker']])
 
-# --- Fetch sector weightings for SPY ---
-# Define the ETF symbol for S&P 500 (SPDR S&P 500 ETF Trust - SPY)
-symbol = 'SPY'
+# --- Calculate market capitalization and weights by sector ---
+# Group by Sector and aggregate market weighted returns
+sector_data = all_data.groupby('Sector').agg(
+    market_weighted_return=('3 Month Market Weighted Return', 'sum')
+).reset_index()
 
-# Fetch the fund sector data
-etf = Ticker(symbol)
-sector_weightings = etf.fund_sector_weightings
+# Calculate total market weighted return for normalization
+total_market_weighted_return = sector_data['market_weighted_return'].sum()
 
-# Check if sector weightings are available and format as a DataFrame
-if isinstance(sector_weightings, dict) and symbol in sector_weightings:
-    sector_data = sector_weightings[symbol]
-    sector_df = pd.DataFrame(sector_data.items(), columns=['Sector', 'Weight'])
-    sector_df['Weight'] = sector_df['Weight'].apply(lambda x: f"{x:.2%}")
-    st.write(f"\nSector weightings for {symbol}:")
-    st.write(sector_df.to_string(index=False))
-elif hasattr(sector_weightings, 'columns') and 'SPY' in sector_weightings.columns:
-    sector_df = sector_weightings[['SPY']].reset_index()
-    sector_df.columns = ['Sector', 'Weight']
-    sector_df['Weight'] = sector_df['Weight'].apply(lambda x: f"{x:.2%}")
-    st.write(f"\nSector weightings for {symbol}:")
-    st.write(sector_df.to_string(index=False))
-else:
-    st.write(f"\nSector weightings for {symbol} not found or no data available.")
+# Calculate sector weights
+sector_data['Sector Weight'] = sector_data['market_weighted_return'] / total_market_weighted_return
+
+# Format sector weights as percentages
+sector_data['Sector Weight'] = (sector_data['Sector Weight'] * 100).round(2).astype(str) + '%'
+
+# Display the sector weights in a neat table in Streamlit
+st.subheader("Sector Weights")
+st.dataframe(sector_data[['Sector', 'Sector Weight']])
+
+# Display the tickers and sectors as a table
+st.subheader("Tickers and Sectors")
+st.dataframe(all_data[['Ticker', 'Sector']].drop_duplicates())
