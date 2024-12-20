@@ -153,7 +153,7 @@ all_data['DAM'] = all_data.apply(calculate_dam, axis=1)
 sector_best_tickers = all_data.groupby('Sector').apply(lambda x: x.loc[x['DAM'].idxmax()])
 
 # Print the result: tickers with the highest DAM for each sector
-st.write("Tickers with the highest DAM for each sector:")
+st.subheader("DAM Tickers:")
 st.write(sector_best_tickers[['Ticker']])
 
 # --- Calculate market capitalization and weights by sector ---
@@ -174,7 +174,3 @@ sector_data['Sector Weight'] = (sector_data['Sector Weight'] * 100).round(2).ast
 # Display the sector weights in a neat table in Streamlit
 st.subheader("Sector Weights")
 st.dataframe(sector_data[['Sector', 'Sector Weight']])
-
-# Display the tickers and sectors as a table
-st.subheader("Tickers and Sectors")
-st.dataframe(all_data[['Ticker', 'Sector']].drop_duplicates())
