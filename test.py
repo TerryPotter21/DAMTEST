@@ -14,48 +14,16 @@ code_input = st.text_input("Enter your DAM access code:", type="password")
 
 # Check if the entered code is valid
 if code_input in AUTHORIZED_CODES:
-    st.success("Access Granted! Please allow a few minutes for your DAM tickers to load.")
+    st.success("You're in. Please allow a few minutes for your DAM tickers to load.")
 else:
     st.error("Please enter a valid code.")
     st.stop()  # Stops the app if the code is not correct
 
 # Define tickers and time period
-tickers = [
-    'SPY', 'A', 'AAPL', 'ABBV', 'ABC', 'ABMD', 'ABT', 'ACGL', 'ACN', 'ADBE', 'ADI', 'ADM', 'ADP', 'ADSK',
-    'AEE', 'AEP', 'AES', 'AFL', 'AIG', 'AIZ', 'AJG', 'AKAM', 'ALB', 'ALGN', 'ALK', 'ALL', 'ALLE', 'AMAT',
-    'AMCR', 'AMD', 'AME', 'AMGN', 'AMP', 'AMT', 'AMZN', 'ANET', 'ANSS', 'AON', 'AOS', 'APA', 'APD', 'APH',
-    'APTV', 'ARE', 'ATO', 'ATVI', 'AVB', 'AVGO', 'AVY', 'AWK', 'AXP', 'AZO', 'BA', 'BAC', 'BAX', 'BBWI',
-    'BBY', 'BDX', 'BEN', 'BF.B', 'BIIB', 'BK', 'BKNG', 'BKR', 'BLK', 'BLL', 'BMY', 'BR', 'BRK.B', 'BRO',
-    'BSX', 'BWA', 'BXP', 'C', 'CAG', 'CAH', 'CARR', 'CAT', 'CB', 'CBOE', 'CBRE', 'CCI', 'CCL', 'CDNS',
-    'CDW', 'CE', 'CEG', 'CF', 'CFG', 'CHD', 'CHRW', 'CHTR', 'CI', 'CINF', 'CL', 'CLX', 'CMCSA', 'CME',
-    'CMG', 'CMS', 'CNC', 'CNP', 'COF', 'COO', 'COP', 'COST', 'CPB', 'CPRT', 'CPT', 'CRL', 'CRM', 'CRWD', 'CSCO',
-    'CSGP', 'CSX', 'CTAS', 'CTLT', 'CTRA', 'CTSH', 'CTVA', 'CVS', 'CVX', 'D', 'DAL', 'DD', 'DE', 'DELL', 'DECK',
-    'DFS', 'DG', 'DGX', 'DHI', 'DHR', 'DIS', 'DISCA', 'DISCK', 'DISH', 'DLR', 'DLTR', 'DOCU', 'DOV', 'DOW',
-    'DPZ', 'DRE', 'DRI', 'DTE', 'DUK', 'DVA', 'DVN', 'DXCM', 'EA', 'EBAY', 'ECL', 'ED', 'EFX', 'EIX', 'EL',
-    'EMN', 'EMR', 'ENPH', 'EOG', 'EPAM', 'EQIX', 'EQR', 'ES', 'ESS', 'ETN', 'ETR', 'ERIE', 'EVRG', 'EW', 'EXC',
-    'EXPD', 'EXPE', 'EXR', 'F', 'FANG', 'FAST', 'FBHS', 'FCX', 'FDS', 'FDX', 'FE', 'FFIV', 'FIS', 'FISV',
-    'FITB', 'FLT', 'FMC', 'FOX', 'FOXA', 'FRT', 'FTNT', 'FTV', 'GD', 'GDDY', 'GE', 'GEV', 'GEHC', 'GILD', 'GIS', 'GL',
-    'GLW', 'GM', 'GNRC', 'GOOG', 'GOOGL', 'GPC', 'GPN', 'GRMN', 'GS', 'GWW', 'HAL', 'HAS', 'HBAN', 'HCA',
-    'HD', 'HES', 'HIG', 'HII', 'HLT', 'HOLX', 'HON', 'HPE', 'HPQ', 'HRL', 'HSIC', 'HST', 'HSY', 'HUM',
-    'HWM', 'IBM', 'ICE', 'IDXX', 'IEX', 'IFF', 'INCY', 'INTC', 'INTU', 'INVH', 'IP', 'IPG', 'IR', 'IRM',
-    'ISRG', 'IT', 'ITW', 'IVZ', 'J', 'JBHT', 'JCI', 'JKHY', 'JNJ', 'JPM', 'K', 'KEY', 'KEYS', 'KHC', 'KIM',
-    'KKR', 'KLAC', 'KMB', 'KMI', 'KO', 'KR', 'L', 'LDOS', 'LEN', 'LH', 'LHX', 'LIN', 'LMT', 'LNC', 'LNT',
-    'LOW', 'LRCX', 'LUMN', 'LUV', 'LYB', 'MA', 'MAA', 'MAR', 'MAS', 'MCD', 'MCHP', 'MCK', 'MCO', 'MDLZ',
-    'MDT', 'MET', 'META', 'MGM', 'MHK', 'MKC', 'MKTX', 'MLM', 'MMC', 'MMM', 'MNST', 'MO', 'MOS', 'MPWR',
-    'MRK', 'MRO', 'MS', 'MSCI', 'MSFT', 'MSI', 'MTB', 'MTD', 'MU', 'NCLH', 'NDAQ', 'NEE', 'NEM', 'NFLX',
-    'NI', 'NKE', 'NOC', 'NOV', 'NRG', 'NSC', 'NTAP', 'NTRS', 'NUE', 'NVDA', 'NVR', 'NWL', 'NWS', 'NWSA',
-    'O', 'ODFL', 'OGN', 'OKE', 'OMC', 'ON', 'ORCL', 'ORLY', 'OTIS', 'OXY', 'PARA', 'PAYC', 'PAYX', 'PCAR',
-    'PCG', 'PEAK', 'PEG', 'PENN', 'PEP', 'PFE', 'PFG', 'PG', 'PGR', 'PH', 'PHM', 'PKG', 'PKI', 'PLD',
-    'PLTR', 'PM', 'PNC', 'PNR', 'PNW', 'POOL', 'PPG', 'PPL', 'PRU', 'PSA', 'PSX', 'PTC', 'PVH', 'PWR',
-    'PYPL', 'QCOM', 'QRVO', 'RCL', 'RE', 'REG', 'REGN', 'RF', 'RJF', 'RL', 'RMD', 'ROK', 'ROL', 'ROP',
-    'ROST', 'RSG', 'RTX', 'SBAC', 'SBUX', 'SCHW', 'SEDG', 'SEE', 'SHW', 'SIRI', 'SJM', 'SLB', 'SLG',
-    'SNA', 'SNPS', 'SMCI', 'SO', 'SOLV', 'SPG', 'SPGI', 'SRE', 'STE', 'STT', 'STX', 'STZ', 'SWK', 'SWKS', 'SYF', 'SYK',
-    'SYY', 'T', 'TAP', 'TDG', 'TDY', 'TECH', 'TEL', 'TER', 'TFC', 'TFX', 'TGT', 'TJX', 'TMO', 'TMUS',
-    'TPR', 'TRMB', 'TROW', 'TRV', 'TSCO', 'TSLA', 'TSN', 'TT', 'TTWO', 'TXN', 'TXT', 'TYL', 'UAL', 'UDR',
-    'UHS', 'ULTA', 'UNH', 'UNP', 'UPS', 'URI', 'USB', 'V', 'VICI', 'VLO', 'VMC', 'VNO', 'VRSK', 'VRSN',
-    'VRTX', 'VTR', 'VTRS', 'VZ', 'VST', 'WAB', 'WAT', 'WBA', 'WBD', 'WDC', 'WEC', 'WELL', 'WFC', 'WM',
-    'WMB', 'WMT', 'WRB', 'WRK', 'WST', 'WTW', 'WY', 'WYNN', 'XEL', 'XOM', 'XYL', 'YUM', 'ZBH', 'ZBRA', 'ZTS'
-]
+tickers = ['SPY', 'GOOGL', 'META', 'DIS', 'AMZN', 'TSLA', 'NKE', 'PG', 'KO', 'PEP', 
+    'XOM', 'CVX', 'SLB', 'JPM', 'BAC', 'WFC', 'JNJ', 'PFE', 'UNH', 'BA', 
+    'GE', 'CAT', 'AAPL', 'MSFT', 'NVDA', 'LIN', 'APD', 'FCX', 'AMT', 'PLD', 
+    'SPG', 'NEE', 'DUK', 'SO']
 
 all_data = pd.DataFrame()
 
@@ -153,7 +121,7 @@ all_data['DAM'] = all_data.apply(calculate_dam, axis=1)
 sector_best_tickers = all_data.groupby('Sector').apply(lambda x: x.loc[x['DAM'].idxmax()])
 
 # Display the tickers with the highest DAM for each sector
-st.subheader("DAM Tickers")
+st.subheader("DAM Ticker")
 st.dataframe(sector_best_tickers[['Ticker']])
 
 # --- Calculate market capitalization and weights by sector ---
@@ -171,9 +139,6 @@ sector_data['Sector Weight'] = sector_data['market_weighted_return'] / total_mar
 # Format sector weights as percentages
 sector_data['Sector Weight'] = (sector_data['Sector Weight'] * 100).round(2).astype(str) + '%'
 
-# Reset index of the DataFrame to avoid displaying it
-sector_data_reset = sector_data[['Sector', 'Sector Weight']].reset_index(drop=True)
-
-# Display the sector weights in a neat table
+# Display the sector weights in a neat table in Streamlit
 st.subheader("Sector Weights")
-st.dataframe(sector_data_reset, use_container_width=True)
+st.dataframe(sector_data[['Sector', 'Sector Weight']])
