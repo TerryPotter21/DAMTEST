@@ -152,20 +152,5 @@ all_data['DAM'] = all_data.apply(calculate_dam, axis=1)
 # Group by Sector and select the ticker with the highest DAM for each sector
 sector_best_tickers = all_data.groupby('Sector').apply(lambda x: x.loc[x['DAM'].idxmax()])
 
-# Define the ETF symbol for S&P 500 (SPDR S&P 500 ETF Trust - SPY)
-symbol = 'SPY'
-
-# Fetch the fund sector data
-etf = Ticker(symbol)
-sector_weightings = etf.fund_sector_weightings
-
-# Normalize sector names in sector_weightings
-normalized_weights = {key.lower().replace(" ", "_"): value for key, value in sector_weightings['SPY'].items()}
-
-# Print concise results: Sector, Ticker, and Sector Weight
-st.write(f"{'Sector':<20} | {'Ticker':<6} | {'Sector Weight':>12}")
-st.write("-" * 43)
-for sector, row in sector_best_tickers.iterrows():
-    normalized_sector = sector.lower().replace(" ", "_")  # Match naming convention
-    weight = normalized_weights.get(normalized_sector, 'N/A')  # Map to normalized weights
-    st.write(f"{sector:<20} | {row['Ticker']:<6} | {weight:>11.2%}" if weight != 'N/A' else f"{sector:<20} | {row['Ticker']:<6} | {'N/A':>11}")
+# Print the result: tickers with the highest DAM for each sector
+st.write(sector_best_tickers[['Ticker', 'DAM']])
