@@ -170,7 +170,6 @@ if isinstance(sector_weightings, dict) and 'SPY' in sector_weightings:
     for sector, weight in sector_weightings['SPY'].items():
         st.write(f"{sector}: {weight:.2%}")
 elif hasattr(sector_weightings, 'columns') and 'SPY' in sector_weightings.columns:
-    st.write(f"\nSector weightings for SPY ETF:")
     for index, row in sector_weightings.iterrows():
         sector = index.strip()
         weight = row['SPY']
