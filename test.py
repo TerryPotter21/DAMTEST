@@ -155,24 +155,21 @@ sector_best_tickers = all_data.groupby('Sector').apply(lambda x: x.loc[x['DAM'].
 # Print the result: tickers with the highest DAM for each sector
 st.write(sector_best_tickers[['Ticker']])
 
-# Define the ETF symbol for S&P 500 (SPDR S&P 500 ETF Trust - SPY)
-symbol = 'SPY'
-
-# Fetch the fund sector data
-etf = Ticker(symbol)
+# Fetch the sector weightings for SPY ETF
+etf = Ticker('SPY')
 sector_weightings = etf.fund_sector_weightings
 
 # Check and print sector weightings
-if isinstance(sector_weightings, dict) and symbol in sector_weightings:
-    st.write(f"Sector weightings for {symbol}:")
-    for sector, weight in sector_weightings[symbol].items():
+if isinstance(sector_weightings, dict) and 'SPY' in sector_weightings:
+    st.write(f"\nSector weightings for SPY ETF:")
+    for sector, weight in sector_weightings['SPY'].items():
         st.write(f"{sector}: {weight:.2%}")
 elif hasattr(sector_weightings, 'columns') and 'SPY' in sector_weightings.columns:
-    st.write(f"Sector weightings for {symbol}:")
+    st.write(f"\nSector weightings for SPY ETF:")
     for index, row in sector_weightings.iterrows():
         sector = index.strip()
         weight = row['SPY']
         if sector:  # Skip any empty rows
             st.write(f"{sector}: {weight:.2%}")
 else:
-    st.write(f"Sector weightings for {symbol} not found or no data available.")
+    st.write("Sector weightings for SPY ETF not found or no data available.")
