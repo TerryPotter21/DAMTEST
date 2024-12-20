@@ -14,7 +14,7 @@ code_input = st.text_input("Enter your DAM access code:", type="password")
 
 # Check if the entered code is valid
 if code_input in AUTHORIZED_CODES:
-    st.success("Access Granted. Please allow a few minutes for your DAM tickers to load.")
+    st.success("You're in. Please allow a few minutes for your DAM tickers to load.")
 else:
     st.error("Please enter a valid code.")
     st.stop()  # Stops the app if the code is not correct
@@ -152,23 +152,25 @@ all_data['DAM'] = all_data.apply(calculate_dam, axis=1)
 # Group by Sector and select the ticker with the highest DAM for each sector
 sector_best_tickers = all_data.groupby('Sector').apply(lambda x: x.loc[x['DAM'].idxmax()])
 
-# --- Fetch sector weightings for SPY ---
-# Define the ETF symbol for S&P 500 (SPDR S&P 500 ETF Trust - SPY)
-symbol = 'SPY'
-
-# Fetch the fund sector data
-etf = Ticker(symbol)
-sector_weightings = etf.fund_sector_weightings
-
-# Check if sector weightings are available and format as a DataFrame
-if isinstance(sector_weightings, dict) and symbol in sector_weightings:
-    sector_data = sector_weightings[symbol]
-    sector_df = pd.DataFrame(sector_data.items(), columns=['Sector', 'Weight'])
-    sector_df['Weight'] = sector_df['Weight'].apply(lambda x: f"{x:.2%}")
-    # Display the sector weights in a neat table in Streamlit
-    st.subheader("Sector Weights")
-    st.dataframe(sector_df[['Sector', 'Weight']])
-
 # Display the tickers with the highest DAM for each sector
 st.subheader("DAM Ticker")
 st.dataframe(sector_best_tickers[['Ticker']])
+
+# --- Calculate market capitalization and weights by sector ---
+# Group by Sector and aggregate market weighted returns
+sector_data = all_data.groupby('Sector').agg(
+    market_weighted_return=('3 Month Market Weighted Return', 'sum')
+).reset_index()
+
+# Calculate total market weighted return for normalization
+total_market_weighted_return = sector_data['market_weighted_return'].sum()
+
+# Calculate sector weights
+sector_data['Sector Weight'] = sector_data['market_weighted_return'] / total_market_weighted_return
+
+# Format sector weights as percentages
+sector_data['Sector Weight'] = (sector_data['Sector Weight'] * 100).round(2).astype(str) + '%'
+
+# Display the sector weights in a neat table in Streamlit
+st.subheader("Sector Weights")
+st.dataframe(sector_data[['Sector', 'Sector Weight']])
