@@ -14,14 +14,14 @@ code_input = st.text_input("Enter your DAM access code:", type="password")
 
 # Check if the entered code is valid
 if code_input in AUTHORIZED_CODES:
-    st.success("Access Granted! Please allow a few minutes for your DAM tickers to load.")
+    st.success("You're in. Please allow a few minutes for your DAM tickers to load.")
 else:
     st.error("Please enter a valid code.")
     st.stop()  # Stops the app if the code is not correct
 
 # Define tickers and time period
 tickers = [
-    'SPY', 'A', 'AAPL', 'ABBV', 'ABC', 'ABMD', 'ABT', 'ACGL', 'ACN', 'ADBE', 'ADI', 'ADM', 'ADP', 'ADSK',
+    'A', 'AAPL', 'ABBV', 'ABC', 'ABMD', 'ABT', 'ACGL', 'ACN', 'ADBE', 'ADI', 'ADM', 'ADP', 'ADSK',
     'AEE', 'AEP', 'AES', 'AFL', 'AIG', 'AIZ', 'AJG', 'AKAM', 'ALB', 'ALGN', 'ALK', 'ALL', 'ALLE', 'AMAT',
     'AMCR', 'AMD', 'AME', 'AMGN', 'AMP', 'AMT', 'AMZN', 'ANET', 'ANSS', 'AON', 'AOS', 'APA', 'APD', 'APH',
     'APTV', 'ARE', 'ATO', 'ATVI', 'AVB', 'AVGO', 'AVY', 'AWK', 'AXP', 'AZO', 'BA', 'BAC', 'BAX', 'BBWI',
@@ -152,25 +152,24 @@ all_data['DAM'] = all_data.apply(calculate_dam, axis=1)
 # Group by Sector and select the ticker with the highest DAM for each sector
 sector_best_tickers = all_data.groupby('Sector').apply(lambda x: x.loc[x['DAM'].idxmax()])
 
-# Display the tickers with the highest DAM for each sector
-st.subheader("DAM Ticker")
-st.dataframe(sector_best_tickers[['Ticker']])
+# Print the result: tickers with the highest DAM for each sector
+st.write(sector_best_tickers[['Ticker']])
 
-# --- Calculate market capitalization and weights by sector ---
-# Group by Sector and aggregate market weighted returns
-sector_data = all_data.groupby('Sector').agg(
-    market_weighted_return=('3 Month Market Weighted Return', 'sum')
-).reset_index()
+# Fetch the sector weightings for SPY ETF
+etf = Ticker('SPY')
+sector_weightings = etf.fund_sector_weightings
 
-# Calculate total market weighted return for normalization
-total_market_weighted_return = sector_data['market_weighted_return'].sum()
-
-# Calculate sector weights
-sector_data['Sector Weight'] = sector_data['market_weighted_return'] / total_market_weighted_return
-
-# Format sector weights as percentages
-sector_data['Sector Weight'] = (sector_data['Sector Weight'] * 100).round(2).astype(str) + '%'
-
-# Display the sector weights in a neat table in Streamlit
-st.subheader("Sector Weights")
-st.dataframe(sector_data[['Sector', 'Sector Weight']])
+# Check and print sector weightings
+if isinstance(sector_weightings, dict) and 'SPY' in sector_weightings:
+    st.write(f"\nSector weightings for SPY ETF:")
+    for sector, weight in sector_weightings['SPY'].items():
+        st.write(f"{sector}: {weight:.2%}")
+elif hasattr(sector_weightings, 'columns') and 'SPY' in sector_weightings.columns:
+    st.write(f"\nSector weightings for SPY ETF:")
+    for index, row in sector_weightings.iterrows():
+        sector = index.strip()
+        weight = row['SPY']
+        if sector:  # Skip any empty rows
+            st.write(f"{sector}: {weight:.2%}")
+else:
+    st.write("Sector weightings for SPY ETF not found or no data available.")
