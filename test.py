@@ -34,14 +34,7 @@ end_date = datetime.now().strftime('%Y-%m-%d')
 start_date = (datetime.now() - relativedelta(months=13)).replace(day=1).strftime('%Y-%m-%d')
 
 # Streamlit UI elements
-st.title('Top DAM Scores by Sector')
-st.markdown("This tool shows the top two DAM score tickers for each sector based on a combination of return and beta.")
-
-# Create a button to download the data
-if st.button('Download DAM Data'):
-    # Download data for all tickers
-    for ticker in tickers:
-        st.write(f"Downloading monthly data for {ticker}...")
+st.subheader('DAM Tickers')
         
         # Download monthly historical data for each ticker
         data = yf.download(ticker, start=start_date, end=end_date, interval="1mo")
