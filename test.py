@@ -36,19 +36,19 @@ start_date = (datetime.now() - relativedelta(months=13)).replace(day=1).strftime
 # Streamlit UI elements
 st.subheader('DAM Tickers')
         
-        # Download monthly historical data for each ticker
-        data = yf.download(ticker, start=start_date, end=end_date, interval="1mo")
+    # Download monthly historical data for each ticker
+    data = yf.download(ticker, start=start_date, end=end_date, interval="1mo")
         
-        # Get stock info, including sector
-        stock_info = yf.Ticker(ticker).info
-        sector = stock_info.get('sector', 'N/A')  # Get sector, if not available, return 'N/A'
+    # Get stock info, including sector
+    stock_info = yf.Ticker(ticker).info
+    sector = stock_info.get('sector', 'N/A')  # Get sector, if not available, return 'N/A'
         
-        # Add Ticker, Sector, and Adjusted Close columns
-        data['Ticker'] = ticker
-        data['Sector'] = sector
+    # Add Ticker, Sector, and Adjusted Close columns
+    data['Ticker'] = ticker
+    data['Sector'] = sector
         
-        # Keep only the required columns
-        all_data = pd.concat([all_data, data[['Ticker', 'Sector', 'Adj Close']]])
+    # Keep only the required columns
+    all_data = pd.concat([all_data, data[['Ticker', 'Sector', 'Adj Close']]])
 
     # Reset index to format DataFrame
     all_data.reset_index(inplace=True)
