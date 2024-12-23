@@ -12,12 +12,13 @@ AUTHORIZED_CODES = ["freelunch"]
 st.title("Dynamic Alpha Model (Beta)")
 code_input = st.text_input("Enter your DAM access code:", type="password")
 
-# Check if the entered code is valid
-if code_input in AUTHORIZED_CODES:
-    st.success("Access Granted! Please allow a few minutes for your DAM tickers to load.")
-else:
-    st.error("Please enter a valid code.")
-    st.stop()  # Stops the app if the code is not correct
+# Check if the entered code is valid only after it has been entered
+if code_input:
+    if code_input in AUTHORIZED_CODES:
+        st.success("Access Granted! Please allow a few minutes for your DAM tickers to load.")
+    else:
+        st.error("Please enter a valid code.")
+        st.stop()  # Stops the app if the code is not correct
 
 # Define tickers and time period
 tickers = [
