@@ -74,7 +74,7 @@ status_placeholder = st.empty()
 # Download data for all tickers
 for ticker in tickers:
     # Update the status in the placeholder
-    status_placeholder.text(f"Downloading monthly data for {ticker}...")
+    status_placeholder.text(f"Downloading data for {ticker}...")
 
     # Download monthly historical data for each ticker
     data = yf.download(ticker, start=start_date, end=end_date, interval="1mo")
@@ -92,6 +92,9 @@ for ticker in tickers:
 
 # Reset index to format DataFrame
 all_data.reset_index(inplace=True)
+
+# Exclude tickers with "N/A" sector
+all_data = all_data[all_data['Sector'] != 'N/A']
 
 # Calculate Excess Return (Column E)
 all_data['Excess Return'] = (
