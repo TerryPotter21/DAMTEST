@@ -58,9 +58,6 @@ for ticker in tickers:
     # Keep only the required columns
     all_data = pd.concat([all_data, data[['Ticker', 'Sector', 'Adj Close']]])
 
-    # Sleep to simulate progress (can be removed, if not needed)
-    time.sleep(0.5)
-
 # Reset index to format DataFrame
 all_data.reset_index(inplace=True)
 
