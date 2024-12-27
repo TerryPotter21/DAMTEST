@@ -15,39 +15,44 @@ code_input = st.text_input("Enter your DAM access code:", type="password")
 
 # Check if the entered code is valid
 if code_input in AUTHORIZED_CODES:
-    st.success("Access Granted! Checking current monthly data...")
-    
+    st.success("Access Granted!")
+
     # Code to check the current monthly data
-    with st.spinner("Fetching data, please wait..."):
-        ticker = "SPY"
-        # Calculate the start date as 13 months ago
-        start_date = (datetime.now() - relativedelta(months=13)).strftime('%Y-%m-%d')
-        end_date = datetime.now().strftime('%Y-%m-%d')
-        
-        # Download the data from Yahoo Finance
-        data = yf.download(ticker, start=start_date, end=end_date, interval="1mo")
-        
-        # Extract the most recent data row
-        last_date = data.index[-1].strftime('%Y-%m')  # Get the year-month format
-        current_month = datetime.now().strftime('%Y-%m')  # Get the current year-month
-        
-        # Check if the last date matches the current month
-        if last_date == current_month:
-            model_status = "Model using current monthly data: TRUE"
-        else:
-            model_status = "Model using current monthly data: FALSE"
+    if "model_status_checked" not in st.session_state:
+        st.session_state.model_status_checked = False
 
-    # Display the model status
-    st.write(model_status)
+    if not st.session_state.model_status_checked:
+        if st.button("Check Current Monthly Data"):
+            with st.spinner("Fetching data, please wait..."):
+                ticker = "SPY"
+                # Calculate the start date as 13 months ago
+                start_date = (datetime.now() - relativedelta(months=13)).strftime('%Y-%m-%d')
+                end_date = datetime.now().strftime('%Y-%m-%d')
+                
+                # Download the data from Yahoo Finance
+                data = yf.download(ticker, start=start_date, end=end_date, interval="1mo")
+                
+                # Extract the most recent data row
+                last_date = data.index[-1].strftime('%Y-%m')  # Get the year-month format
+                current_month = datetime.now().strftime('%Y-%m')  # Get the current year-month
+                
+                # Check if the last date matches the current month
+                if last_date == current_month:
+                    st.session_state.model_status = "Model using current monthly data: TRUE"
+                else:
+                    st.session_state.model_status = "Model using current monthly data: FALSE"
+                st.session_state.model_status_checked = True
 
-    # Proceed button
-    if st.button("Proceed"):
-        st.success("Running the rest of the application...")
-        # Add your main application code here
-        st.write("Main application code goes here!")
+    if st.session_state.model_status_checked:
+        st.write(st.session_state.model_status)
+
+        # Proceed button
+        if st.button("Proceed"):
+            st.success("Running the rest of the application...")
+            # Add your main application code here
+            st.write("Main application code goes here!")
 else:
     st.error("Please enter a valid code.")
-    st.stop()  # Stops the app if the code is not correct
 
 # Define tickers and time period
 tickers = [
