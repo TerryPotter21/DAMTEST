@@ -51,6 +51,7 @@ if code_input in AUTHORIZED_CODES:
             st.success("Running the rest of the application...")
             # Add your main application code here
             st.write("Main application code goes here!")
+
 else:
     st.error("Please enter a valid code.")
 
