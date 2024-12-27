@@ -12,8 +12,18 @@ AUTHORIZED_CODES = ["freelunch"]
 st.title("Dynamic Alpha Model (Beta)")
 code_input = st.text_input("Enter your DAM access code:", type="password")
 
+# Initialize a flag to check if the code is correct
+is_code_valid = None
+
 # Check if the entered code is valid
-if code_input in AUTHORIZED_CODES:
+if code_input:
+    if code_input in AUTHORIZED_CODES:
+        is_code_valid = True
+    else:
+        is_code_valid = False
+
+# Display success or error messages based on code validation
+if is_code_valid:
     st.success("Access Granted!")
 
     # Step 1: Model using current monthly data (TRUE/FALSE) message
@@ -161,6 +171,5 @@ if code_input in AUTHORIZED_CODES:
         sector_best_tickers_reset = sector_best_tickers.reset_index()
         st.write(sector_best_tickers_reset[['Sector', 'Ticker', 'Alt Ticker']])
 
-else:
+elif is_code_valid is False:
     st.error("Please enter a valid code.")
-    st.stop()  # Stops the app if the code is not correct
