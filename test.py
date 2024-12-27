@@ -202,6 +202,25 @@ if is_code_valid:
         # Now reset index and display the result
         sector_best_tickers_reset = sector_best_tickers.reset_index()
         st.write(sector_best_tickers_reset[['Sector', 'Ticker', 'Alt Ticker']])
+        
+        # Fetch the sector weightings for SPY ETF
+        etf = Ticker('SPY')
+        sector_weightings = etf.fund_sector_weightings
+
+        # Add subheader for Sector Weights
+        st.subheader("Sector Weights")
+        if isinstance(sector_weightings, dict) and 'SPY' in sector_weightings:
+            st.write(f"\nSector weightings for SPY ETF:")
+            for sector, weight in sector_weightings['SPY'].items():
+                st.write(f"{sector}: {weight:.2%}")
+        elif hasattr(sector_weightings, 'columns') and 'SPY' in sector_weightings.columns:
+            for index, row in sector_weightings.iterrows():
+                sector = index.strip()
+                weight = row['SPY']
+                if sector:  # Skip any empty rows
+                    st.write(f"{sector}: {weight:.2%}")
+        else:
+            st.write("Sector weightings for SPY ETF not found or no data available.")
 
 elif is_code_valid is False:
     st.error("Please enter a valid code.")
