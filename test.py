@@ -17,7 +17,7 @@ if code_input in AUTHORIZED_CODES:
     st.success("Access Granted!")
 
     # Step 1: Model using current monthly data (TRUE/FALSE) message
-    use_current_data = True  # This can be set based on your conditions
+    use_current_data = TRUE  # This can be set based on your conditions
     st.write(f"Model using current monthly data: {use_current_data}")
 
     # Step 2: Proceed Button
