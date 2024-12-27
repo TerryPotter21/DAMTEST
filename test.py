@@ -14,7 +14,7 @@ code_input = st.text_input("Enter your DAM access code:", type="password")
 
 # Check if the entered code is valid
 if code_input in AUTHORIZED_CODES:
-    st.success("Access Granted! Please allow a few minutes for your DAM tickers to load.")
+    st.success("Access Granted!")
 
     # Step 1: Model using current monthly data (TRUE/FALSE) message
     use_current_data = True  # This can be set based on your conditions
@@ -24,6 +24,7 @@ if code_input in AUTHORIZED_CODES:
     proceed_button = st.button("Proceed")
     
     if proceed_button:
+        st.write("Please allow a few minutes for your DAM tickers to load.")
         # Define tickers and time period
         tickers = [
             'A', 'AAPL', 'ABBV', 'ABC', 'ABMD', 'ABT', 
