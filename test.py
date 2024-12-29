@@ -37,12 +37,12 @@ if is_code_valid:
         st.write("Please allow a few minutes for your DAM tickers to load.")
         # Define tickers and time period
         tickers = [
-    'A', 'AAPL', 'ABBV', 'ABC', 'ABMD', 'ABT', 'ACGL', 'ACN', 'ADBE', 'ADI', 'ADM', 'ADP', 'ADSK',
-    'AEE', 'AEP', 'AES', 'AFL', 'AIG', 'AIZ', 'AJG', 'AKAM', 'ALB', 'ALGN', 'ALK', 'ALL', 'ALLE', 'AMAT',
-    'AMCR', 'AMD', 'AME', 'AMGN', 'AMP', 'AMT', 'AMZN', 'ANET', 'ANSS', 'AON', 'AOS', 'APA', 'APD', 'APH',
-    'APTV', 'ARE', 'ATO', 'ATVI', 'AVB', 'AVGO', 'AVY', 'AWK', 'AXP', 'AZO', 'BA', 'BAC', 'BAX', 'BBWI',
-    'BBY', 'BDX', 'BEN', 'BF.B', 'BIIB', 'BK', 'BKNG', 'BKR', 'BLK', 'BLL', 'BMY', 'BR', 'BRK.B', 'BRO',
-    'BSX', 'BWA', 'BXP', 'C', 'CAG', 'CAH', 'CARR', 'CAT', 'CB', 'CBOE', 'CBRE', 'CCI', 'CCL', 'CDNS'
+            'A', 'AAPL', 'ABBV', 'ABC', 'ABMD', 'ABT', 'ACGL', 'ACN', 'ADBE', 'ADI', 'ADM', 'ADP', 'ADSK',
+            'AEE', 'AEP', 'AES', 'AFL', 'AIG', 'AIZ', 'AJG', 'AKAM', 'ALB', 'ALGN', 'ALK', 'ALL', 'ALLE', 'AMAT',
+            'AMCR', 'AMD', 'AME', 'AMGN', 'AMP', 'AMT', 'AMZN', 'ANET', 'ANSS', 'AON', 'AOS', 'APA', 'APD', 'APH',
+            'APTV', 'ARE', 'ATO', 'ATVI', 'AVB', 'AVGO', 'AVY', 'AWK', 'AXP', 'AZO', 'BA', 'BAC', 'BAX', 'BBWI',
+            'BBY', 'BDX', 'BEN', 'BF.B', 'BIIB', 'BK', 'BKNG', 'BKR', 'BLK', 'BLL', 'BMY', 'BR', 'BRK.B', 'BRO',
+            'BSX', 'BWA', 'BXP', 'C', 'CAG', 'CAH', 'CARR', 'CAT', 'CB', 'CBOE', 'CBRE', 'CCI', 'CCL', 'CDNS'
         ]
         
         all_data = pd.DataFrame()
@@ -78,8 +78,8 @@ if is_code_valid:
             # Keep only the required columns
             all_data = pd.concat([all_data, data[['Ticker', 'Sector', 'Adj Close']]])
 
-        # Reset index to format DataFrame
-        all_data.reset_index(inplace=True)
+        # Reset index to format DataFrame without adding an index column
+        all_data.reset_index(drop=True, inplace=True)
 
         # Exclude tickers with "N/A" sector
         all_data = all_data[all_data['Sector'] != 'N/A']
@@ -95,7 +95,7 @@ if is_code_valid:
         # Get SPY data and calculate SPY Excess Return
         spy_data = yf.download('SPY', start=start_date, end=end_date, interval="1mo")
         spy_data['SPY Excess Return'] = spy_data['Adj Close'].pct_change().sub(0.024 / 12).fillna(0)
-        spy_data.reset_index(inplace=True)
+        spy_data.reset_index(drop=True, inplace=True)
 
         # Map SPY Excess Return to all_data
         spy_return_map = dict(zip(spy_data['Date'], spy_data['SPY Excess Return']))
@@ -147,14 +147,16 @@ if is_code_valid:
         # Apply DAM calculation
         all_data['DAM'] = all_data.apply(calculate_dam, axis=1)
 
-        # Now group by ticker to get the overall DAM score for each ticker
+        # Group by ticker to get the overall DAM score for each ticker
         tickers_dam = all_data.groupby('Ticker').agg({'DAM': 'mean'}).reset_index()
 
-        # Now group by sector and get the top 2 DAM tickers
+        # Merge the tickers DAM with sectors data
+        tickers_dam_with_sector = all_data[['Ticker', 'Sector']].drop_duplicates()
+        tickers_dam = tickers_dam.merge(tickers_dam_with_sector, on='Ticker', how='left')
+
+        # Get top 2 tickers per sector
         def get_top_two_dam_tickers(group):
-            # Sort the group by DAM in descending order
             sorted_group = group.sort_values(by='DAM', ascending=False)
-            # Get the top and second top tickers
             top_ticker = sorted_group.iloc[0]
             alt_ticker = sorted_group.iloc[1] if len(sorted_group) > 1 else None
             return pd.Series({
@@ -164,17 +166,11 @@ if is_code_valid:
                 'Alt DAM': alt_ticker['DAM'] if alt_ticker is not None else None
             })
 
-        # Merge the tickers DAM with sectors data
-        tickers_dam_with_sector = all_data[['Ticker', 'Sector']].drop_duplicates()
-        tickers_dam = tickers_dam.merge(tickers_dam_with_sector, on='Ticker', how='left')
+        sector_best_tickers = tickers_dam.groupby('Sector').apply(get_top_two_dam_tickers).reset_index()
 
-        # Apply the function to each sector
-        sector_best_tickers = tickers_dam.groupby('Sector').apply(get_top_two_dam_tickers)
+        # Display final results without an index column
+        st.write(sector_best_tickers[['Sector', 'Ticker', 'Alt Ticker']])
 
-        # Now reset index and display the result
-        sector_best_tickers_reset = sector_best_tickers.reset_index()
-        st.write(sector_best_tickers_reset[['Sector', 'Ticker', 'Alt Ticker']].reset_index(drop=True))
-        
         # Fetch the sector weightings for SPY ETF
         etf = Ticker('SPY')
         sector_weightings = etf.fund_sector_weightings
