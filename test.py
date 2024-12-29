@@ -9,7 +9,7 @@ from yahooquery import Ticker
 AUTHORIZED_CODES = ["freelunch"]
 
 # Login page
-st.title("Dynamic Alpha Model (Beta)")
+st.title("Dynamic Alpha Model")
 code_input = st.text_input("Enter your DAM access code:", type="password")
 
 # Initialize a flag to check if the code is correct
@@ -201,8 +201,8 @@ if is_code_valid:
 
         # Now reset index and display the result
         sector_best_tickers_reset = sector_best_tickers.reset_index()
-        st.write(sector_best_tickers_reset[['Sector', 'Ticker', 'Alt Ticker']].reset_index(drop=True))
-
+        st.write(sector_best_tickers_reset[['Sector', 'Ticker', 'Alt Ticker']])
+        
         # Fetch the sector weightings for SPY ETF
         etf = Ticker('SPY')
         sector_weightings = etf.fund_sector_weightings
