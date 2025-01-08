@@ -170,7 +170,7 @@ if is_code_valid:
         sector_best_tickers_reset = sector_best_tickers.reset_index()
 
         # Drop unnecessary columns
-        sector_best_tickers_reset = sector_best_tickers_reset.drop(columns=['Alt DAM'], errors='ignore')
+        sector_best_tickers_reset = sector_best_tickers_reset.drop(columns=['DAM', 'Alt DAM'], errors='ignore')
 
         # Apply the styling to hide the index and format as needed
         styler = sector_best_tickers_reset.style.hide(axis="index")
