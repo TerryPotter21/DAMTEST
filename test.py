@@ -168,7 +168,7 @@ if is_code_valid:
 
         # Drop the 'DAM' and 'Alt DAM' columns from the DataFrame
         columns_to_display = ["Sector", "Ticker", "Alt Ticker"]  # Specify the columns you want to keep
-        sector_best_tickers_trimmed = sector_best_tickers_reset[columns_to_display]
+        sector_best_tickers_trimmed = sector_best_tickers[columns_to_display]  # Use the correct variable name
 
         # Apply the styling to hide the index and format as needed
         styler = sector_best_tickers_trimmed.style.hide(axis="index")
