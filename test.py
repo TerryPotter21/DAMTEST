@@ -37,8 +37,7 @@ if is_code_valid:
         st.write("Please allow a few minutes for your DAM tickers to load.")
         # Define tickers and time period
         tickers = [
-            'A', 'AAPL', 'ABBV', 'ABC', 'ABMD', 'ABT', 'ACGL', 'ACN', 'ADBE', 'ADI', 'ADM', 'ADP', 'ADSK',
-    'AEE', 'AEP', 'AES', 'AFL', 'AIG', 'AIZ', 'AJG', 'AKAM', 'ALB', 'ALGN', 'ALK', 'ALL', 'ALLE', 'AMAT'
+            'A', 'AAPL', 'ABBV', 'ABC', 'ABMD', 'ABT', 'ACGL', 'ACN', 'ADBE', 'ADI', 'ADM', 'ADP', 'ADSK'
         ]
         
         all_data = pd.DataFrame()
@@ -170,8 +169,7 @@ if is_code_valid:
         # Now reset index and display the result
         sector_best_tickers_reset = sector_best_tickers.reset_index()
         st.write(sector_best_tickers_reset[['Sector', 'Ticker', 'Alt Ticker']])
-
-
+        
         # Fetch the sector weightings for SPY ETF
         etf = Ticker('SPY')
         sector_weightings = etf.fund_sector_weightings
