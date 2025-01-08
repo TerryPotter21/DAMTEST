@@ -201,6 +201,7 @@ if is_code_valid:
 
         # Now reset index and display the result
         sector_best_tickers_reset = sector_best_tickers.reset_index()
+        sector_best_tickers_reset = sector_best_tickers_reset.drop(columns=['index'])
         st.write(sector_best_tickers_reset[['Sector', 'Ticker', 'Alt Ticker']])
         
         # Fetch the sector weightings for SPY ETF
