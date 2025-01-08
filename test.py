@@ -168,7 +168,7 @@ if is_code_valid:
         sector_best_tickers = tickers_dam.groupby('Sector').apply(get_top_two_dam_tickers)
 
         # Now reset index and display the result
-        sector_best_tickers_reset = sector_best_tickers.reset_index()
+        sector_best_tickers_reset = sector_best_tickers.reset_index(drop=True)
         st.write(sector_best_tickers_reset[['Sector', 'Ticker', 'Alt Ticker']])
 
 
