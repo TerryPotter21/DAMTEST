@@ -84,6 +84,18 @@ if is_code_valid:
         # Exclude tickers with "N/A" sector
         all_data = all_data[all_data['Sector'] != 'N/A']
 
+        # Download SPY data and calculate SPY Excess Return
+        spy_data = yf.download('SPY', start=start_date, end=end_date, interval="1mo")
+        spy_data['SPY Excess Return'] = spy_data['Adj Close'].pct_change().sub(0.024 / 12).fillna(0)
+        spy_data.reset_index(inplace=True)
+
+        # Map SPY Excess Return to all_data
+        spy_return_map = dict(zip(spy_data['Date'], spy_data['SPY Excess Return']))
+        all_data['SPY Excess Return'] = all_data['Date'].map(spy_return_map)
+
+        # Check if the SPY Excess Return is correctly added
+        st.write(all_data.head())  # Optional: To inspect the first few rows of your data
+
         # Calculate 12-Month Return
         all_data['12 Month Return'] = all_data.groupby('Ticker')['Adj Close'].pct_change(periods=12)
 
@@ -163,18 +175,6 @@ if is_code_valid:
         # Now reset index and display the result
         sector_best_tickers_reset = sector_best_tickers.reset_index()
         st.write(sector_best_tickers_reset[['Sector', 'Ticker', 'Alt Ticker']])
-
-        # Download SPY data and calculate SPY Excess Return
-        spy_data = yf.download('SPY', start=start_date, end=end_date, interval="1mo")
-        spy_data['SPY Excess Return'] = spy_data['Adj Close'].pct_change().sub(0.024 / 12).fillna(0)
-        spy_data.reset_index(inplace=True)
-
-        # Map SPY Excess Return to all_data
-        spy_return_map = dict(zip(spy_data['Date'], spy_data['SPY Excess Return']))
-        all_data['SPY Excess Return'] = all_data['Date'].map(spy_return_map)
-
-        # Check if the SPY Excess Return is correctly added
-        st.write(all_data.head())  # Optional: To inspect the first few rows of your data
 
         # Fetch the sector weightings for SPY ETF
         etf = Ticker('SPY')
