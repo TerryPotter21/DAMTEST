@@ -174,7 +174,7 @@ if is_code_valid:
 
         # Display the styled table using to_html to prevent index column from appearing
         st.write(styler.to_html(), unsafe_allow_html=True)
-        
+
         # Fetch the sector weightings for SPY ETF
         etf = Ticker('SPY')
         sector_weightings = etf.fund_sector_weightings
