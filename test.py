@@ -167,10 +167,12 @@ if is_code_valid:
         # Apply the function to each sector
         sector_best_tickers = tickers_dam.groupby('Sector').apply(get_top_two_dam_tickers)
 
-        # Now reset index and display the result
+        # Reset index and start from 1
         sector_best_tickers_reset = sector_best_tickers.reset_index(drop=True)
-        st.write(sector_best_tickers_reset[['Sector', 'Ticker', 'Alt Ticker']])
+        sector_best_tickers_reset.index += 1  # Start index from 1
 
+        # Display the result
+        st.write(sector_best_tickers_reset[['Sector', 'Ticker', 'Alt Ticker']])
 
         # Fetch the sector weightings for SPY ETF
         etf = Ticker('SPY')
