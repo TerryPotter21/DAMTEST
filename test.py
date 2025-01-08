@@ -99,7 +99,7 @@ if is_code_valid:
         # Calculate 12-Month Return
         all_data['12 Month Return'] = all_data.groupby('Ticker')['Adj Close'].pct_change(periods=12)
 
-        # Calculate 12-Month Weighted Return (Example using equal weights, adjust as needed)
+        # Define the function to calculate the 12-month weighted return
         def calculate_12_month_weighted_return(df):
             weighted_returns = []
             for i in range(len(df)):
@@ -109,7 +109,11 @@ if is_code_valid:
                     weighted_return = (
                         df['SPY Excess Return'].iloc[i-11:i+1]  # Last 12 months
                     ).mean()  # Replace with weighted logic if necessary
-            weighted_returns.append(weighted_return)
+                    weighted_returns.append(weighted_return)
+            
+            # If the length of weighted_returns is less than df.index, append None to match the length
+            weighted_returns.extend([None] * (len(df) - len(weighted_returns)))
+            
             return pd.Series(weighted_returns, index=df.index)
 
         all_data['12 Month Weighted Return'] = (
