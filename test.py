@@ -42,35 +42,7 @@ if is_code_valid:
     'AMCR', 'AMD', 'AME', 'AMGN', 'AMP', 'AMT', 'AMZN', 'ANET', 'ANSS', 'AON', 'AOS', 'APA', 'APD', 'APH',
     'APTV', 'ARE', 'ATO', 'ATVI', 'AVB', 'AVGO', 'AVY', 'AWK', 'AXP', 'AZO', 'BA', 'BAC', 'BAX', 'BBWI',
     'BBY', 'BDX', 'BEN', 'BF.B', 'BIIB', 'BK', 'BKNG', 'BKR', 'BLK', 'BLL', 'BMY', 'BR', 'BRK.B', 'BRO',
-    'BSX', 'BWA', 'BXP', 'C', 'CAG', 'CAH', 'CARR', 'CAT', 'CB', 'CBOE', 'CBRE', 'CCI', 'CCL', 'CDNS',
-    'CDW', 'CE', 'CEG', 'CF', 'CFG', 'CHD', 'CHRW', 'CHTR', 'CI', 'CINF', 'CL', 'CLX', 'CMCSA', 'CME',
-    'CMG', 'CMS', 'CNC', 'CNP', 'COF', 'COO', 'COP', 'COST', 'CPB', 'CPRT', 'CPT', 'CRL', 'CRM', 'CRWD', 'CSCO',
-    'CSGP', 'CSX', 'CTAS', 'CTLT', 'CTRA', 'CTSH', 'CTVA', 'CVS', 'CVX', 'D', 'DAL', 'DD', 'DE', 'DELL', 'DECK',
-    'DFS', 'DG', 'DGX', 'DHI', 'DHR', 'DIS', 'DISCA', 'DISCK', 'DISH', 'DLR', 'DLTR', 'DOCU', 'DOV', 'DOW',
-    'DPZ', 'DRE', 'DRI', 'DTE', 'DUK', 'DVA', 'DVN', 'DXCM', 'EA', 'EBAY', 'ECL', 'ED', 'EFX', 'EIX', 'EL',
-    'EMN', 'EMR', 'ENPH', 'EOG', 'EPAM', 'EQIX', 'EQR', 'ES', 'ESS', 'ETN', 'ETR', 'ERIE', 'EVRG', 'EW', 'EXC',
-    'EXPD', 'EXPE', 'EXR', 'F', 'FANG', 'FAST', 'FBHS', 'FCX', 'FDS', 'FDX', 'FE', 'FFIV', 'FIS', 'FISV',
-    'FITB', 'FLT', 'FMC', 'FOX', 'FOXA', 'FRT', 'FTNT', 'FTV', 'GD', 'GDDY', 'GE', 'GEV', 'GEHC', 'GILD', 'GIS', 'GL',
-    'GLW', 'GM', 'GNRC', 'GOOG', 'GOOGL', 'GPC', 'GPN', 'GRMN', 'GS', 'GWW', 'HAL', 'HAS', 'HBAN', 'HCA',
-    'HD', 'HES', 'HIG', 'HII', 'HLT', 'HOLX', 'HON', 'HPE', 'HPQ', 'HRL', 'HSIC', 'HST', 'HSY', 'HUM',
-    'HWM', 'IBM', 'ICE', 'IDXX', 'IEX', 'IFF', 'INCY', 'INTC', 'INTU', 'INVH', 'IP', 'IPG', 'IR', 'IRM',
-    'ISRG', 'IT', 'ITW', 'IVZ', 'J', 'JBHT', 'JCI', 'JKHY', 'JNJ', 'JPM', 'K', 'KEY', 'KEYS', 'KHC', 'KIM',
-    'KKR', 'KLAC', 'KMB', 'KMI', 'KO', 'KR', 'L', 'LDOS', 'LEN', 'LH', 'LHX', 'LIN', 'LMT', 'LNC', 'LNT',
-    'LOW', 'LRCX', 'LUMN', 'LUV', 'LYB', 'MA', 'MAA', 'MAR', 'MAS', 'MCD', 'MCHP', 'MCK', 'MCO', 'MDLZ',
-    'MDT', 'MET', 'META', 'MGM', 'MHK', 'MKC', 'MKTX', 'MLM', 'MMC', 'MMM', 'MNST', 'MO', 'MOS', 'MPWR',
-    'MRK', 'MRO', 'MS', 'MSCI', 'MSFT', 'MSI', 'MTB', 'MTD', 'MU', 'NCLH', 'NDAQ', 'NEE', 'NEM', 'NFLX',
-    'NI', 'NKE', 'NOC', 'NOV', 'NRG', 'NSC', 'NTAP', 'NTRS', 'NUE', 'NVDA', 'NVR', 'NWL', 'NWS', 'NWSA',
-    'O', 'ODFL', 'OGN', 'OKE', 'OMC', 'ON', 'ORCL', 'ORLY', 'OTIS', 'OXY', 'PARA', 'PAYC', 'PAYX', 'PCAR',
-    'PCG', 'PEAK', 'PEG', 'PENN', 'PEP', 'PFE', 'PFG', 'PG', 'PGR', 'PH', 'PHM', 'PKG', 'PKI', 'PLD',
-    'PLTR', 'PM', 'PNC', 'PNR', 'PNW', 'POOL', 'PPG', 'PPL', 'PRU', 'PSA', 'PSX', 'PTC', 'PVH', 'PWR',
-    'PYPL', 'QCOM', 'QRVO', 'RCL', 'RE', 'REG', 'REGN', 'RF', 'RJF', 'RL', 'RMD', 'ROK', 'ROL', 'ROP',
-    'ROST', 'RSG', 'RTX', 'SBAC', 'SBUX', 'SCHW', 'SEDG', 'SEE', 'SHW', 'SIRI', 'SJM', 'SLB', 'SLG',
-    'SNA', 'SNPS', 'SMCI', 'SO', 'SOLV', 'SPG', 'SPGI', 'SRE', 'STE', 'STT', 'STX', 'STZ', 'SWK', 'SWKS', 'SYF', 'SYK',
-    'SYY', 'T', 'TAP', 'TDG', 'TDY', 'TECH', 'TEL', 'TER', 'TFC', 'TFX', 'TGT', 'TJX', 'TMO', 'TMUS',
-    'TPR', 'TRMB', 'TROW', 'TRV', 'TSCO', 'TSLA', 'TSN', 'TT', 'TTWO', 'TXN', 'TXT', 'TYL', 'UAL', 'UDR',
-    'UHS', 'ULTA', 'UNH', 'UNP', 'UPS', 'URI', 'USB', 'V', 'VICI', 'VLO', 'VMC', 'VNO', 'VRSK', 'VRSN',
-    'VRTX', 'VTR', 'VTRS', 'VZ', 'VST', 'WAB', 'WAT', 'WBA', 'WBD', 'WDC', 'WEC', 'WELL', 'WFC', 'WM',
-    'WMB', 'WMT', 'WRB', 'WRK', 'WST', 'WTW', 'WY', 'WYNN', 'XEL', 'XOM', 'XYL', 'YUM', 'ZBH', 'ZBRA', 'ZTS'
+    'BSX', 'BWA', 'BXP', 'C', 'CAG', 'CAH', 'CARR', 'CAT', 'CB', 'CBOE', 'CBRE', 'CCI', 'CCL', 'CDNS'
         ]
         
         all_data = pd.DataFrame()
@@ -112,68 +84,57 @@ if is_code_valid:
         # Exclude tickers with "N/A" sector
         all_data = all_data[all_data['Sector'] != 'N/A']
 
-        # Calculate Excess Return (Column E)
-        all_data['Excess Return'] = (
-            all_data.groupby('Ticker')['Adj Close']
-            .pct_change()
-            .sub(0.024 / 12)  # Subtracting the risk-free rate (monthly)
-            .fillna(0)
-        )
+        # Calculate 12-Month Return
+        all_data['12 Month Return'] = all_data.groupby('Ticker')['Adj Close'].pct_change(periods=12)
 
-        # Get SPY data and calculate SPY Excess Return
-        spy_data = yf.download('SPY', start=start_date, end=end_date, interval="1mo")
-        spy_data['SPY Excess Return'] = spy_data['Adj Close'].pct_change().sub(0.024 / 12).fillna(0)
-        spy_data.reset_index(inplace=True)
-
-        # Map SPY Excess Return to all_data
-        spy_return_map = dict(zip(spy_data['Date'], spy_data['SPY Excess Return']))
-        all_data['SPY Excess Return'] = all_data['Date'].map(spy_return_map)
-
-        # Calculate 3 Month Return (Column G)
-        all_data['3 Month Return'] = all_data.groupby('Ticker')['Adj Close'].pct_change(periods=3)
-
-        # Calculate 3 Month Market Weighted Return (Column H)
-        def calculate_market_weighted_return(df):
+        # Calculate 12-Month Weighted Return (Example using equal weights, adjust as needed)
+        def calculate_12_month_weighted_return(df):
             weighted_returns = []
             for i in range(len(df)):
-                if i < 3:  # Require at least 3 months of data
+                if i < 11:  # Require at least 12 months of data
                     weighted_returns.append(None)
                 else:
                     weighted_return = (
-                        df['SPY Excess Return'].iloc[i-3] * 0.04 +  # 3 periods ago
-                        df['SPY Excess Return'].iloc[i-2] * 0.16 +  # 2 periods ago
-                        df['SPY Excess Return'].iloc[i-1] * 0.36    # 1 period ago (most recent)
-                    )
-                    weighted_returns.append(weighted_return)
+                        df['SPY Excess Return'].iloc[i-11:i+1]  # Last 12 months
+            ).mean()  # Replace with weighted logic if necessary
+            weighted_returns.append(weighted_return)
             return pd.Series(weighted_returns, index=df.index)
 
-        all_data['3 Month Market Weighted Return'] = (
-            all_data.groupby('Ticker', group_keys=False).apply(calculate_market_weighted_return)
+        all_data['12 Month Weighted Return'] = (
+            all_data.groupby('Ticker', group_keys=False).apply(calculate_12_month_weighted_return)
         )
 
-        # Calculate 12 Month Beta (Column I)
-        def calculate_beta(df):
+        # Calculate 6-Month Volatility
+        all_data['6 Month Volatility'] = all_data.groupby('Ticker')['Adj Close'].pct_change().rolling(6).std()
+
+        # Calculate 6-Month Beta
+        def calculate_6_month_beta(df):
             beta = []
             for i in range(len(df)):
-                if i < 11:  # Require at least 12 months of data
+                if i < 5:  # Require at least 6 months of data
                     beta.append(None)
                 else:
-                    y = df['Excess Return'].iloc[i-11:i+1]
-                    x = df['SPY Excess Return'].iloc[i-11:i+1]
+                    y = df['Excess Return'].iloc[i-5:i+1]
+                    x = df['SPY Excess Return'].iloc[i-5:i+1]
                     beta.append(pd.Series(y).cov(x) / pd.Series(x).var())
             return pd.Series(beta, index=df.index)
 
-        all_data['12 Month Beta'] = (
-            all_data.groupby('Ticker', group_keys=False).apply(calculate_beta)
+        all_data['6 Month Beta'] = (
+            all_data.groupby('Ticker', group_keys=False).apply(calculate_6_month_beta)
         )
 
-        # Define DAM calculation function
-        def calculate_dam(row):
-            # Example formula combining 3-month return, market weighted return, and beta.
-            return (row['3 Month Return'] or 0) + (row['3 Month Market Weighted Return'] or 0) + (row['12 Month Beta'] or 0)
+        # Calculate DAM Score
+        def calculate_dam_score(row):
+            try:
+                dam_score = (
+                    (row['12 Month Return'] * row['12 Month Weighted Return']) /
+                    row['6 Month Volatility'] * row['6 Month Beta']
+                )
+            except ZeroDivisionError:
+                dam_score = None  # Handle cases where volatility is zero
+            return dam_score
 
-        # Apply DAM calculation
-        all_data['DAM'] = all_data.apply(calculate_dam, axis=1)
+        all_data['DAM'] = all_data.apply(calculate_dam_score, axis=1)
 
         # Now group by ticker to get the overall DAM score for each ticker
         tickers_dam = all_data.groupby('Ticker').agg({'DAM': 'mean'}).reset_index()
