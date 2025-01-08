@@ -93,6 +93,9 @@ if is_code_valid:
         spy_return_map = dict(zip(spy_data['Date'], spy_data['SPY Excess Return']))
         all_data['SPY Excess Return'] = all_data['Date'].map(spy_return_map)
 
+        # Calculate Excess Return for each ticker
+        all_data['Excess Return'] = all_data['Adj Close'].pct_change() - all_data['SPY Excess Return']
+        
         # Check if the SPY Excess Return is correctly added
         st.write(all_data.head())  # Optional: To inspect the first few rows of your data
 
@@ -190,14 +193,7 @@ if is_code_valid:
             st.write(f"\nSector weightings for SPY ETF:")
             for sector, weight in sector_weightings['SPY'].items():
                 st.write(f"{sector}: {weight:.2%}")
-        elif hasattr(sector_weightings, 'columns') and 'SPY' in sector_weightings.columns:
-            for index, row in sector_weightings.iterrows():
-                sector = index.strip()
-                weight = row['SPY']
-                if sector:  # Skip any empty rows
-                    st.write(f"{sector}: {weight:.2%}")
-        else:
-            st.write("Sector weightings for SPY ETF not found or no data available.")
 
-elif is_code_valid is False:
-    st.error("Please enter a valid code.")
+else:
+    if is_code_valid is False:
+        st.error("Access Denied. Invalid code.")
