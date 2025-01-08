@@ -168,7 +168,12 @@ if is_code_valid:
 
         # Now reset index and display the result
         sector_best_tickers_reset = sector_best_tickers.reset_index()
-        st.write(sector_best_tickers_reset[['Sector', 'Ticker', 'Alt Ticker']])
+
+        # Apply the styling to hide the index and format as needed
+        styler = sector_best_tickers_reset.style.hide_index()
+
+        # Display the styled table using to_html to prevent index column from appearing
+        st.write(styler.to_html(), unsafe_allow_html=True)
         
         # Fetch the sector weightings for SPY ETF
         etf = Ticker('SPY')
