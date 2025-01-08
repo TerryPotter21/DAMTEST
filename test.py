@@ -37,12 +37,12 @@ if is_code_valid:
         st.write("Please allow a few minutes for your DAM tickers to load.")
         # Define tickers and time period
         tickers = [
-    'A', 'AAPL', 'ABBV', 'ABC', 'ABMD', 'ABT', 'ACGL', 'ACN', 'ADBE', 'ADI', 'ADM', 'ADP', 'ADSK',
-    'AEE', 'AEP', 'AES', 'AFL', 'AIG', 'AIZ', 'AJG', 'AKAM', 'ALB', 'ALGN', 'ALK', 'ALL', 'ALLE', 'AMAT',
-    'AMCR', 'AMD', 'AME', 'AMGN', 'AMP', 'AMT', 'AMZN', 'ANET', 'ANSS', 'AON', 'AOS', 'APA', 'APD', 'APH',
-    'APTV', 'ARE', 'ATO', 'ATVI', 'AVB', 'AVGO', 'AVY', 'AWK', 'AXP', 'AZO', 'BA', 'BAC', 'BAX', 'BBWI',
-    'BBY', 'BDX', 'BEN', 'BF.B', 'BIIB', 'BK', 'BKNG', 'BKR', 'BLK', 'BLL', 'BMY', 'BR', 'BRK.B', 'BRO',
-    'BSX', 'BWA', 'BXP', 'C', 'CAG', 'CAH', 'CARR', 'CAT', 'CB', 'CBOE', 'CBRE', 'CCI', 'CCL', 'CDNS'
+            'A', 'AAPL', 'ABBV', 'ABC', 'ABMD', 'ABT', 'ACGL', 'ACN', 'ADBE', 'ADI', 'ADM', 'ADP', 'ADSK',
+            'AEE', 'AEP', 'AES', 'AFL', 'AIG', 'AIZ', 'AJG', 'AKAM', 'ALB', 'ALGN', 'ALK', 'ALL', 'ALLE', 'AMAT',
+            'AMCR', 'AMD', 'AME', 'AMGN', 'AMP', 'AMT', 'AMZN', 'ANET', 'ANSS', 'AON', 'AOS', 'APA', 'APD', 'APH',
+            'APTV', 'ARE', 'ATO', 'ATVI', 'AVB', 'AVGO', 'AVY', 'AWK', 'AXP', 'AZO', 'BA', 'BAC', 'BAX', 'BBWI',
+            'BBY', 'BDX', 'BEN', 'BF.B', 'BIIB', 'BK', 'BKNG', 'BKR', 'BLK', 'BLL', 'BMY', 'BR', 'BRK.B', 'BRO',
+            'BSX', 'BWA', 'BXP', 'C', 'CAG', 'CAH', 'CARR', 'CAT', 'CB', 'CBOE', 'CBRE', 'CCI', 'CCL', 'CDNS'
         ]
         
         all_data = pd.DataFrame()
@@ -96,7 +96,7 @@ if is_code_valid:
                 else:
                     weighted_return = (
                         df['SPY Excess Return'].iloc[i-11:i+1]  # Last 12 months
-            ).mean()  # Replace with weighted logic if necessary
+                    ).mean()  # Replace with weighted logic if necessary
             weighted_returns.append(weighted_return)
             return pd.Series(weighted_returns, index=df.index)
 
@@ -163,7 +163,19 @@ if is_code_valid:
         # Now reset index and display the result
         sector_best_tickers_reset = sector_best_tickers.reset_index()
         st.write(sector_best_tickers_reset[['Sector', 'Ticker', 'Alt Ticker']])
-        
+
+        # Download SPY data and calculate SPY Excess Return
+        spy_data = yf.download('SPY', start=start_date, end=end_date, interval="1mo")
+        spy_data['SPY Excess Return'] = spy_data['Adj Close'].pct_change().sub(0.024 / 12).fillna(0)
+        spy_data.reset_index(inplace=True)
+
+        # Map SPY Excess Return to all_data
+        spy_return_map = dict(zip(spy_data['Date'], spy_data['SPY Excess Return']))
+        all_data['SPY Excess Return'] = all_data['Date'].map(spy_return_map)
+
+        # Check if the SPY Excess Return is correctly added
+        st.write(all_data.head())  # Optional: To inspect the first few rows of your data
+
         # Fetch the sector weightings for SPY ETF
         etf = Ticker('SPY')
         sector_weightings = etf.fund_sector_weightings
