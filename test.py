@@ -170,7 +170,7 @@ if is_code_valid:
         sector_best_tickers_reset = sector_best_tickers.reset_index()
 
         # Apply the styling to hide the index and format as needed
-        styler = sector_best_tickers_reset.style.hide_index()
+        styler = sector_best_tickers_reset.style.hide_index_()
 
         # Display the styled table using to_html to prevent index column from appearing
         st.write(styler.to_html(), unsafe_allow_html=True)
