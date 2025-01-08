@@ -166,8 +166,8 @@ if is_code_valid:
         # Apply the function to each sector
         sector_best_tickers = tickers_dam.groupby('Sector').apply(get_top_two_dam_tickers)
 
-        # Now reset index and display the result
-        sector_best_tickers_reset = sector_best_tickers.reset_index()
+        # Drop the "Alt DAM" and "Alt Ticker" columns
+        sector_best_tickers_reset = sector_best_tickers_reset.drop(columns=['Alt Ticker', 'Alt DAM'], errors='ignore')
 
         # Apply the styling to hide the index and format as needed
         styler = sector_best_tickers_reset.style.hide(axis="index")
