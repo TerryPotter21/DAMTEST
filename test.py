@@ -166,11 +166,12 @@ if is_code_valid:
         # Apply the function to each sector
         sector_best_tickers = tickers_dam.groupby('Sector').apply(get_top_two_dam_tickers)
 
-        # Now reset index and display the result
-        sector_best_tickers_reset = sector_best_tickers.reset_index()
+        # Drop the 'DAM' and 'Alt DAM' columns from the DataFrame
+        columns_to_display = ["Sector", "Ticker", "Alt Ticker"]  # Specify the columns you want to keep
+        sector_best_tickers_trimmed = sector_best_tickers_reset[columns_to_display]
 
         # Apply the styling to hide the index and format as needed
-        styler = sector_best_tickers_reset.style.hide(axis="index")
+        styler = sector_best_tickers_trimmed.style.hide(axis="index")
 
         # Display the styled table using to_html to prevent index column from appearing
         st.write(styler.to_html(), unsafe_allow_html=True)
