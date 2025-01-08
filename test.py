@@ -42,16 +42,6 @@ if is_code_valid:
         
         all_data = pd.DataFrame()
 
-            hide_dataframe_row_index = """
-            <style>
-            .row_heading.level0 {display:none}
-            .blank {display:none}
-            </style>
-            """
-             st.markdown(hide_dataframe_row_index, unsafe_allow_html=True)
-
-             st.dataframe(df)
-
         # Define end date as today
         end_date = datetime.now().strftime('%Y-%m-%d')
 
