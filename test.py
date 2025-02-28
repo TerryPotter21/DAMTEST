@@ -21,9 +21,8 @@ if is_code_valid:
     tickers = ['A', 'AAPL', 'ABBV', 'ABC', 'ABMD', 'ABT', 'ACGL', 'ACN', 'ADBE', 'ADI', 'ADM', 'ADP', 'ADSK']
     all_data = pd.DataFrame()
 
-    # Get the current date
     current_date = datetime.now()
-    current_month_year = current_date.strftime('%Y-%m')  # Format as 'YYYY-MM'
+    current_month_year = current_date.strftime('%Y-%m')
 
     st.write("**DAM Instructions:**")
     st.write("Rotate at the beginning of the month.")
@@ -37,24 +36,19 @@ if is_code_valid:
         stock = yf.Ticker(ticker)
         data = stock.history(period='14mo', interval='1mo')
         data.reset_index(inplace=True)
-
         if not data.empty:
             data['Ticker'] = ticker
             all_data = pd.concat([all_data, data[['Date', 'Ticker', 'Close']].rename(columns={'Close': 'Adj Close'})])
-
-        time.sleep(1)  # Sleep to prevent rate limits
+        time.sleep(1)
 
     all_data.reset_index(drop=True, inplace=True)
 
-    # Extract the most recent date in the dataset
     if not all_data.empty:
         latest_data_date = all_data['Date'].max()
         latest_month_year = latest_data_date.strftime('%Y-%m')
-
-        # Check if the latest data is from the current month
         is_current_data = latest_month_year == current_month_year
     else:
-        is_current_data = False  # No data available
+        is_current_data = False
 
     st.write(f"Model using current monthly data: {is_current_data}")
 
@@ -78,13 +72,12 @@ if is_code_valid:
                 stock_info = stock.info
                 sector = stock_info.get('sector', 'N/A')
             except Exception:
-                pass  # Suppress errors
+                pass
 
             data['Ticker'] = ticker
             data['Sector'] = sector
             all_data = pd.concat([all_data, data[['Date', 'Ticker', 'Sector', 'Close']].rename(columns={'Close': 'Adj Close'})])
-
-            time.sleep(1)  # Sleep for rate limits
+            time.sleep(1)
 
         all_data.reset_index(drop=True, inplace=True)
         all_data = all_data[all_data['Sector'] != 'N/A']
@@ -136,20 +129,15 @@ if is_code_valid:
         sector_best_tickers = tickers_dam.groupby('Sector').apply(get_top_two_dam_tickers).reset_index()
         st.write(sector_best_tickers.style.hide(axis="index").to_html(), unsafe_allow_html=True)
 
-        # sector weights
         etf = yf.Ticker('SPY')
-        funds_data = etf.funds_data  # Accessing funds data
-
+        funds_data = etf.funds_data
         st.subheader("Sector Weights")
         try:
-            sector_weightings = funds_data.sector_weightings  
-            if sector_weightings:
-                formatted_weightings = {sector: f"{weight * 100:.2f}%" for sector, weight in sector_weightings.items()}
-                st.write(formatted_weightings)
-            else:
-                st.write("No sector weightings data available for SPY ETF.")
+            sector_weightings = funds_data.sector_weightings
+            formatted_weightings = {sector: f"{weight * 100:.2f}%" for sector, weight in sector_weightings.items()} if sector_weightings else "No sector weightings data available."
+            st.write(formatted_weightings)
         except Exception:
-            st.write("No sector weightings data available or an error occurred for SPY ETF.")
+            st.write("No sector weightings data available or an error occurred.")
 
 elif is_code_valid is False:
     st.error("Please enter a valid code.")
