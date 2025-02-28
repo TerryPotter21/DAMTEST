@@ -106,7 +106,8 @@ if is_code_valid:
         styler = sector_best_tickers.style.hide(axis="index")
         st.write(styler.to_html(), unsafe_allow_html=True)
 
-        etf = Ticker('SPY')
+        # Corrected Ticker instantiation
+        etf = yf.Ticker('SPY')
         sector_weightings = etf.fund_sector_weightings
 
         st.subheader("Sector Weights")
