@@ -4,6 +4,7 @@ import yfinance as yf
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from yahooquery import Ticker
+import time
 
 # Define a list of allowed access codes
 AUTHORIZED_CODES = ["freelunch"]
@@ -38,12 +39,18 @@ if is_code_valid:
             data = stock.history(period='14mo', interval='1mo')  # Using history() instead of download()
             data.reset_index(inplace=True)
             
-            stock_info = stock.info
-            sector = stock_info.get('sector', 'N/A')
+            try:
+                stock_info = stock.info
+                sector = stock_info.get('sector', 'N/A')
+            except KeyError:
+                sector = 'N/A'  # Default value if 'sector' is not available
+                st.warning(f"Sector info not available for {ticker}")
 
             data['Ticker'] = ticker
             data['Sector'] = sector
             all_data = pd.concat([all_data, data[['Date', 'Ticker', 'Sector', 'Close']].rename(columns={'Close': 'Adj Close'})])
+            
+            time.sleep(1)  # Sleep for 1 second between requests to avoid hitting rate limits
 
         all_data.reset_index(drop=True, inplace=True)
         all_data = all_data[all_data['Sector'] != 'N/A']
