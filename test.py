@@ -110,12 +110,14 @@ if is_code_valid:
         etf = yf.Ticker('SPY')
         funds_data = etf.funds_data  # Accessing funds data
 
-        st.subheader("Sector Weightings (SPY ETF)")
-        # Fetching sector weightings
+        st.subheader("Sector Weights")
+        # Fetching and formatting sector weightings as percentages
         try:
             sector_weightings = funds_data.sector_weightings  # Retrieve sector weightings for the ETF
             if sector_weightings:
-                st.write(sector_weightings)
+                # Format each sector weighting as a percentage
+                formatted_weightings = {sector: f"{weight * 100:.2f}%" for sector, weight in sector_weightings.items()}
+                st.write(formatted_weightings)
             else:
                 st.write("No sector weightings data available for SPY ETF.")
         except Exception as e:
