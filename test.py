@@ -21,8 +21,9 @@ if is_code_valid:
     tickers = ['A', 'AAPL', 'ABBV', 'ABC', 'ABMD', 'ABT', 'ACGL', 'ACN', 'ADBE', 'ADI', 'ADM', 'ADP', 'ADSK']
     all_data = pd.DataFrame()
 
+    # Get the current date
     current_date = datetime.now()
-    current_month_year = current_date.strftime('%Y-%m')
+    current_month_year = current_date.strftime('%Y-%m')  # Format as 'YYYY-MM'
 
     st.write("**DAM Instructions:**")
     st.write("Rotate at the beginning of the month.")
@@ -36,30 +37,32 @@ if is_code_valid:
         stock = yf.Ticker(ticker)
         data = stock.history(period='14mo', interval='1mo')
         data.reset_index(inplace=True)
+
         if not data.empty:
             data['Ticker'] = ticker
             all_data = pd.concat([all_data, data[['Date', 'Ticker', 'Close']].rename(columns={'Close': 'Adj Close'})])
-        time.sleep(1)
+
+        time.sleep(1)  # Sleep to prevent rate limits
 
     all_data.reset_index(drop=True, inplace=True)
 
+    # Extract the most recent date in the dataset
     if not all_data.empty:
         latest_data_date = all_data['Date'].max()
         latest_month_year = latest_data_date.strftime('%Y-%m')
         is_current_data = latest_month_year == current_month_year
     else:
-        is_current_data = False
+        is_current_data = False  # No data available
 
     st.write(f"Model using current monthly data: {is_current_data}")
 
     if st.button("Proceed"):
         st.write("Please allow a few minutes for your DAM tickers to load.")
-        
-        end_date = datetime.now().strftime('%Y-%m-%d')
-        start_date = (datetime.now() - relativedelta(months=13)).replace(day=1).strftime('%Y-%m-%d')
-
         st.subheader('DAM Tickers')
         status_placeholder = st.empty()
+
+        end_date = datetime.now().strftime('%Y-%m-%d')
+        start_date = (datetime.now() - relativedelta(months=13)).replace(day=1).strftime('%Y-%m-%d')
 
         for ticker in tickers:
             status_placeholder.text(f"Downloading data for {ticker}...")
@@ -72,12 +75,13 @@ if is_code_valid:
                 stock_info = stock.info
                 sector = stock_info.get('sector', 'N/A')
             except Exception:
-                pass
+                pass  # Suppress errors
 
             data['Ticker'] = ticker
             data['Sector'] = sector
             all_data = pd.concat([all_data, data[['Date', 'Ticker', 'Sector', 'Close']].rename(columns={'Close': 'Adj Close'})])
-            time.sleep(1)
+
+            time.sleep(1)  # Sleep for rate limits
 
         all_data.reset_index(drop=True, inplace=True)
         all_data = all_data[all_data['Sector'] != 'N/A']
