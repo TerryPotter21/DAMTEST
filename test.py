@@ -27,7 +27,7 @@ if is_code_valid:
 
     st.write("**DAM Instructions:**")
     st.write("Rotate at the beginning of the month.")
-    st.write("Ensure current montly data is true (before 5th).")
+    st.write("Ensure current monthly data is true (before 5th).")
     st.write("Weight portfolio matching S&P sectors.")
     st.write("Errors/questions: tannerterry221@gmail.com")
     st.write("")
@@ -131,28 +131,10 @@ if is_code_valid:
             sorted_group = group.sort_values(by='DAM', ascending=False)
             top_ticker = sorted_group.iloc[0]
             alt_ticker = sorted_group.iloc[1] if len(sorted_group) > 1 else None
-            return pd.Series({
-                'Ticker': top_ticker['Ticker'],
-                'Alt Ticker': alt_ticker['Ticker'] if alt_ticker is not None else None
-            })
+            return pd.Series({'Ticker': top_ticker['Ticker'], 'Alt Ticker': alt_ticker['Ticker'] if alt_ticker is not None else None})
 
         sector_best_tickers = tickers_dam.groupby('Sector').apply(get_top_two_dam_tickers).reset_index()
-        styler = sector_best_tickers.style.hide(axis="index")
-        st.write(styler.to_html(), unsafe_allow_html=True)
-
-        etf = yf.Ticker('SPY')
-        funds_data = etf.funds_data  # Accessing funds data
-
-        st.subheader("Sector Weights")
-        try:
-            sector_weightings = funds_data.sector_weightings  
-            if sector_weightings:
-                formatted_weightings = {sector: f"{weight * 100:.2f}%" for sector, weight in sector_weightings.items()}
-                st.write(formatted_weightings)
-            else:
-                st.write("No sector weightings data available for SPY ETF.")
-        except Exception:
-            st.write("No sector weightings data available or an error occurred for SPY ETF.")
+        st.write(sector_best_tickers.style.hide(axis="index").to_html(), unsafe_allow_html=True)
 
 elif is_code_valid is False:
     st.error("Please enter a valid code.")
