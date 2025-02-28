@@ -4,6 +4,7 @@ import yfinance as yf
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import time
+from yahooquery import Ticker
 
 # Define a list of allowed access codes
 AUTHORIZED_CODES = ["freelunch"]
@@ -58,6 +59,7 @@ if is_code_valid:
 
     if st.button("Proceed"):
         st.write("Please allow a few minutes for your DAM tickers to load.")
+        st.experimental_rerun()
         st.subheader('DAM Tickers')
         status_placeholder = st.empty()
 
