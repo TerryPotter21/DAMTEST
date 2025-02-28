@@ -108,14 +108,13 @@ if is_code_valid:
 
         # Corrected Ticker instantiation
         etf = yf.Ticker('SPY')
-        sector_weightings = etf.fund_sector_weightings
+        funds_data = etf.funds_data  # Accessing funds data
 
-        st.subheader("Sector Weights")
-        if isinstance(sector_weightings, dict) and 'SPY' in sector_weightings:
-            for sector, weight in sector_weightings['SPY'].items():
-                st.write(f"{sector}: {weight:.2%}")
+        st.subheader("Fund Data (SPY ETF)")
+        if funds_data:
+            st.write(funds_data)
         else:
-            st.write("Sector weightings for SPY ETF not found or no data available.")
-
+            st.write("No fund data available for SPY ETF.")
+        
 elif is_code_valid is False:
     st.error("Please enter a valid code.")
