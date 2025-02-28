@@ -59,7 +59,7 @@ if is_code_valid:
 
     if st.button("Proceed"):
         st.write("Please allow a few minutes for your DAM tickers to load.")
-        st.experimental_rerun()
+        
         st.subheader('DAM Tickers')
         status_placeholder = st.empty()
 
