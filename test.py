@@ -21,10 +21,10 @@ if is_code_valid:
 
     # Display DAM instructions and the model status message
     st.write("**DAM Instructions:**")
-    st.write("1. Rotate at the beginning of the month.")
-    st.write("2. Ensure current monthly data is true (before 5th).")
-    st.write("3. Weight portfolio matching S&P sectors.")
-    st.write("4. Errors/questions: tannerterry221@gmail.com")
+    st.write("Rotate at the beginning of the month.")
+    st.write("Ensure current monthly data is true (before 5th).")
+    st.write("Weight portfolio matching S&P sectors.")
+    st.write("Errors/dam questions: tannerterry221@gmail.com")
 
     # Initialize tickers and data collection
     tickers = ['A', 'AAPL', 'ABBV', 'ABC', 'ABMD', 'ABT', 'ACGL', 'ACN', 'ADBE', 'ADI', 'ADM', 'ADP', 'ADSK']
