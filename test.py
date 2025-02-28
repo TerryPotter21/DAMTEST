@@ -20,22 +20,21 @@ if is_code_valid:
     st.success("Access Granted!")
 
     # Display DAM instructions and the model status message
-    st.write("DAM Instructions:")
+    st.write("**DAM Instructions:**")
     st.write("1. Rotate at the beginning of the month.")
     st.write("2. Ensure current monthly data is true (before 5th).")
     st.write("3. Weight portfolio matching S&P sectors.")
     st.write("4. Errors/questions: tannerterry221@gmail.com")
-    
-    st.write("Model using current monthly data:", end=" ")
 
     # Initialize tickers and data collection
     tickers = ['A', 'AAPL', 'ABBV', 'ABC', 'ABMD', 'ABT', 'ACGL', 'ACN', 'ADBE', 'ADI', 'ADM', 'ADP', 'ADSK']
     all_data = pd.DataFrame()
 
+    # Set date range
     end_date = datetime.now().strftime('%Y-%m-%d')
     start_date = (datetime.now() - relativedelta(months=13)).replace(day=1).strftime('%Y-%m-%d')
 
-    st.subheader('DAM Tickers')
+    st.subheader("DAM Tickers")
     status_placeholder = st.empty()
 
     for ticker in tickers:
@@ -45,12 +44,8 @@ if is_code_valid:
         data.reset_index(inplace=True)
 
         # Try to get sector info safely
-        try:
-            stock_info = stock.info
-            sector = stock_info.get('sector', 'N/A')
-        except Exception as e:
-            sector = 'N/A'  # Default value if error occurs
-            st.warning(f"Error retrieving sector info for {ticker}: {e}")
+        stock_info = stock.info
+        sector = stock_info.get('sector', 'N/A')
 
         data['Ticker'] = ticker
         data['Sector'] = sector
@@ -115,33 +110,34 @@ if is_code_valid:
 
     sector_best_tickers = tickers_dam.groupby('Sector').apply(get_top_two_dam_tickers).reset_index()
     styler = sector_best_tickers.style.hide(axis="index")
-    st.write(styler.to_html(), unsafe_allow_html=True)
+    
+    # Determine if data is current
+    latest_date = all_data['Date'].max().strftime('%Y-%m-%d')  # Get latest available date
+    current_month = datetime.now().strftime('%Y-%m')  # Get current month as YYYY-MM
 
-    # Corrected Ticker instantiation
-    etf = yf.Ticker('SPY')
-    funds_data = etf.funds_data  # Accessing funds data
+    is_current_data = latest_date.startswith(current_month)
 
-    st.subheader("Sector Weights")
-    # Fetching and formatting sector weightings as percentages
-    try:
-        sector_weightings = funds_data.sector_weightings  # Retrieve sector weightings for the ETF
-        if sector_weightings:
-            # Format each sector weighting as a percentage
-            formatted_weightings = {sector: f"{weight * 100:.2f}%" for sector, weight in sector_weightings.items()}
-            st.write(formatted_weightings)
-        else:
-            st.write("No sector weightings data available for SPY ETF.")
-    except Exception as e:
-        st.error(f"Error retrieving sector weightings: {e}")
+    # Display True/False for current data check
+    st.write(f"**Model using current monthly data:** {is_current_data}")
 
-    # Check if the model is using current monthly data
-    latest_date = all_data['Date'].max()  # Get the most recent date from the 'Date' column
-    current_month = datetime.now().strftime('%Y-%m-%d')  # Get the current date in the same format
+    # Proceed button
+    if st.button("Proceed"):
+        st.write(styler.to_html(), unsafe_allow_html=True)
 
-    if latest_date.startswith(current_month[:7]):  # Check if year-month matches current date's year-month
-        st.write("Model using current monthly data: True")
-    else:
-        st.write(f"Model using data up to {latest_date}. This is not current monthly data.")
+        # Fetch and display sector weightings
+        st.subheader("Sector Weights")
+        try:
+            etf = yf.Ticker('SPY')
+            funds_data = etf.funds_data  # Accessing funds data
+            sector_weightings = funds_data.sector_weightings  # Retrieve sector weightings for the ETF
+            
+            if sector_weightings:
+                formatted_weightings = {sector: f"{weight * 100:.2f}%" for sector, weight in sector_weightings.items()}
+                st.write(formatted_weightings)
+            else:
+                st.write("No sector weightings data available for SPY ETF.")
+        except Exception as e:
+            st.error(f"Error retrieving sector weightings: {e}")
 
 elif is_code_valid is False:
     st.error("Please enter a valid code.")
