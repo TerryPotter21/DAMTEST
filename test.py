@@ -25,13 +25,13 @@ if is_code_valid:
     current_date = datetime.now()
     current_month_year = current_date.strftime('%Y-%m')  # Format as 'YYYY-MM'
 
-    st.write("DAM Instructions:")
+    st.write("**DAM Instructions:**")
     st.write("Rotate at the beginning of the month.")
     st.write("Ensure current montly data is true (before 5th).")
     st.write("Weight portfolio matching S&P sectors.")
     st.write("Errors/questions: tannerterry221@gmail.com")
     st.write("")
-    st.write("Loading Monthly Data. Please be f*cking patient...")
+    st.write("Loading DAM Monthly Data. Please wait...")
 
     for ticker in tickers:
         stock = yf.Ticker(ticker)
@@ -60,7 +60,7 @@ if is_code_valid:
 
     if st.button("Proceed"):
         st.write("Please allow a few minutes for your DAM tickers to load.")
-
+        
         end_date = datetime.now().strftime('%Y-%m-%d')
         start_date = (datetime.now() - relativedelta(months=13)).replace(day=1).strftime('%Y-%m-%d')
 
