@@ -38,13 +38,13 @@ if is_code_valid:
             data = stock.history(period='14mo', interval='1mo')  # Using history() instead of download()
             data.reset_index(inplace=True)
 
-            # Try to get sector info safely
+            # Try to get sector info safely and suppress errors
+            sector = 'N/A'
             try:
                 stock_info = stock.info
                 sector = stock_info.get('sector', 'N/A')
-            except Exception as e:
-                sector = 'N/A'  # Default value if error occurs
-                st.warning(f"Error retrieving sector info for {ticker}: {e}")
+            except Exception:
+                pass  # Suppress error messages when sector info retrieval fails
 
             data['Ticker'] = ticker
             data['Sector'] = sector
@@ -120,8 +120,8 @@ if is_code_valid:
                 st.write(formatted_weightings)
             else:
                 st.write("No sector weightings data available for SPY ETF.")
-        except Exception as e:
-            st.error(f"Error retrieving sector weightings: {e}")
+        except Exception:
+            st.write("No sector weightings data available or an error occurred for SPY ETF.")
         
 elif is_code_valid is False:
     st.error("Please enter a valid code.")
