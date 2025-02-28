@@ -25,7 +25,13 @@ if is_code_valid:
     current_date = datetime.now()
     current_month_year = current_date.strftime('%Y-%m')  # Format as 'YYYY-MM'
 
-    st.write("Loading...")
+    st.write("DAM Instructions:")
+    st.write("Rotate at the beginning of the month.")
+    st.write("Ensure current montly data is true (before 5th)."
+    st.write("Weight portfolio matching S&P sectors.")
+    st.write("Errors/questions: tannerterry221@gmail.com")
+    st.write("")
+    st.write("Loading Monthly Data. Please be f*cking patient...")
 
     for ticker in tickers:
         stock = yf.Ticker(ticker)
