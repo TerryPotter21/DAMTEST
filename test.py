@@ -27,7 +27,7 @@ if is_code_valid:
 
     st.write("DAM Instructions:")
     st.write("Rotate at the beginning of the month.")
-    st.write("Ensure current montly data is true (before 5th)."
+    st.write("Ensure current montly data is true (before 5th).")
     st.write("Weight portfolio matching S&P sectors.")
     st.write("Errors/questions: tannerterry221@gmail.com")
     st.write("")
