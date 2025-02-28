@@ -110,11 +110,16 @@ if is_code_valid:
         etf = yf.Ticker('SPY')
         funds_data = etf.funds_data  # Accessing funds data
 
-        st.subheader("Fund Data (SPY ETF)")
-        if funds_data:
-            st.write(funds_data)
-        else:
-            st.write("No fund data available for SPY ETF.")
+        st.subheader("Sector Weightings (SPY ETF)")
+        # Fetching sector weightings
+        try:
+            sector_weightings = funds_data.sector_weightings  # Retrieve sector weightings for the ETF
+            if sector_weightings:
+                st.write(sector_weightings)
+            else:
+                st.write("No sector weightings data available for SPY ETF.")
+        except Exception as e:
+            st.error(f"Error retrieving sector weightings: {e}")
         
 elif is_code_valid is False:
     st.error("Please enter a valid code.")
