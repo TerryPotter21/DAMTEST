@@ -15,16 +15,45 @@ code_input = st.text_input("Enter your DAM access code:", type="password")
 # Initialize a flag to check if the code is correct
 is_code_valid = code_input in AUTHORIZED_CODES if code_input else None
 
-# Display success or error messages based on code validation
 if is_code_valid:
     st.success("Access Granted!")
-    st.write("Model using current monthly data: True")
+
+    tickers = ['A', 'AAPL', 'ABBV', 'ABC', 'ABMD', 'ABT', 'ACGL', 'ACN', 'ADBE', 'ADI', 'ADM', 'ADP', 'ADSK']
+    all_data = pd.DataFrame()
+
+    # Get the current date
+    current_date = datetime.now()
+    current_month_year = current_date.strftime('%Y-%m')  # Format as 'YYYY-MM'
+
+    st.write("Downloading data for tickers...")
+
+    for ticker in tickers:
+        stock = yf.Ticker(ticker)
+        data = stock.history(period='14mo', interval='1mo')
+        data.reset_index(inplace=True)
+
+        if not data.empty:
+            data['Ticker'] = ticker
+            all_data = pd.concat([all_data, data[['Date', 'Ticker', 'Close']].rename(columns={'Close': 'Adj Close'})])
+
+        time.sleep(1)  # Sleep to prevent rate limits
+
+    all_data.reset_index(drop=True, inplace=True)
+
+    # Extract the most recent date in the dataset
+    if not all_data.empty:
+        latest_data_date = all_data['Date'].max()
+        latest_month_year = latest_data_date.strftime('%Y-%m')
+
+        # Check if the latest data is from the current month
+        is_current_data = latest_month_year == current_month_year
+    else:
+        is_current_data = False  # No data available
+
+    st.write(f"Model using current monthly data: {is_current_data}")
 
     if st.button("Proceed"):
         st.write("Please allow a few minutes for your DAM tickers to load.")
-
-        tickers = ['A', 'AAPL', 'ABBV', 'ABC', 'ABMD', 'ABT', 'ACGL', 'ACN', 'ADBE', 'ADI', 'ADM', 'ADP', 'ADSK']
-        all_data = pd.DataFrame()
 
         end_date = datetime.now().strftime('%Y-%m-%d')
         start_date = (datetime.now() - relativedelta(months=13)).replace(day=1).strftime('%Y-%m-%d')
@@ -35,22 +64,21 @@ if is_code_valid:
         for ticker in tickers:
             status_placeholder.text(f"Downloading data for {ticker}...")
             stock = yf.Ticker(ticker)
-            data = stock.history(period='14mo', interval='1mo')  # Using history() instead of download()
+            data = stock.history(period='14mo', interval='1mo')
             data.reset_index(inplace=True)
 
-            # Try to get sector info safely and suppress errors
             sector = 'N/A'
             try:
                 stock_info = stock.info
                 sector = stock_info.get('sector', 'N/A')
             except Exception:
-                pass  # Suppress error messages when sector info retrieval fails
+                pass  # Suppress errors
 
             data['Ticker'] = ticker
             data['Sector'] = sector
             all_data = pd.concat([all_data, data[['Date', 'Ticker', 'Sector', 'Close']].rename(columns={'Close': 'Adj Close'})])
-            
-            time.sleep(1)  # Sleep for 1 second between requests to avoid hitting rate limits
+
+            time.sleep(1)  # Sleep for rate limits
 
         all_data.reset_index(drop=True, inplace=True)
         all_data = all_data[all_data['Sector'] != 'N/A']
@@ -106,22 +134,19 @@ if is_code_valid:
         styler = sector_best_tickers.style.hide(axis="index")
         st.write(styler.to_html(), unsafe_allow_html=True)
 
-        # Corrected Ticker instantiation
         etf = yf.Ticker('SPY')
         funds_data = etf.funds_data  # Accessing funds data
 
         st.subheader("Sector Weights")
-        # Fetching and formatting sector weightings as percentages
         try:
-            sector_weightings = funds_data.sector_weightings  # Retrieve sector weightings for the ETF
+            sector_weightings = funds_data.sector_weightings  
             if sector_weightings:
-                # Format each sector weighting as a percentage
                 formatted_weightings = {sector: f"{weight * 100:.2f}%" for sector, weight in sector_weightings.items()}
                 st.write(formatted_weightings)
             else:
                 st.write("No sector weightings data available for SPY ETF.")
         except Exception:
             st.write("No sector weightings data available or an error occurred for SPY ETF.")
-        
+
 elif is_code_valid is False:
     st.error("Please enter a valid code.")
