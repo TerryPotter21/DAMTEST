@@ -25,7 +25,7 @@ if is_code_valid:
     current_date = datetime.now()
     current_month_year = current_date.strftime('%Y-%m')  # Format as 'YYYY-MM'
 
-    st.write("Downloading data for tickers...")
+    st.write("Loading...")
 
     for ticker in tickers:
         stock = yf.Ticker(ticker)
