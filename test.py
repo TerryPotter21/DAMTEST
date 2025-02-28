@@ -136,5 +136,20 @@ if is_code_valid:
         sector_best_tickers = tickers_dam.groupby('Sector').apply(get_top_two_dam_tickers).reset_index()
         st.write(sector_best_tickers.style.hide(axis="index").to_html(), unsafe_allow_html=True)
 
+        # sector weights
+        etf = yf.Ticker('SPY')
+        funds_data = etf.funds_data  # Accessing funds data
+
+        st.subheader("Sector Weights")
+        try:
+            sector_weightings = funds_data.sector_weightings  
+            if sector_weightings:
+                formatted_weightings = {sector: f"{weight * 100:.2f}%" for sector, weight in sector_weightings.items()}
+                st.write(formatted_weightings)
+            else:
+                st.write("No sector weightings data available for SPY ETF.")
+        except Exception:
+            st.write("No sector weightings data available or an error occurred for SPY ETF.")
+
 elif is_code_valid is False:
     st.error("Please enter a valid code.")
