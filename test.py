@@ -3,7 +3,6 @@ import pandas as pd
 import yfinance as yf
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from yahooquery import Ticker
 import time
 
 # Define a list of allowed access codes
@@ -38,13 +37,14 @@ if is_code_valid:
             stock = yf.Ticker(ticker)
             data = stock.history(period='14mo', interval='1mo')  # Using history() instead of download()
             data.reset_index(inplace=True)
-            
+
+            # Try to get sector info safely
             try:
                 stock_info = stock.info
                 sector = stock_info.get('sector', 'N/A')
-            except KeyError:
-                sector = 'N/A'  # Default value if 'sector' is not available
-                st.warning(f"Sector info not available for {ticker}")
+            except Exception as e:
+                sector = 'N/A'  # Default value if error occurs
+                st.warning(f"Error retrieving sector info for {ticker}: {e}")
 
             data['Ticker'] = ticker
             data['Sector'] = sector
